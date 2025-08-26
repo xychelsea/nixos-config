@@ -3,7 +3,7 @@ result
 result-*
 
 # Ignore hardware configurations
-*hardward-configuration.nix
+*hardware-configuration.nix
 
 # Ignore automatically generated direnv output
 .direnv
