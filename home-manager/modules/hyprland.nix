@@ -102,9 +102,13 @@
         disable_splash_rendering = true;
         initial_workspace_tracking = 1;
       };
+      bindm = [
+        "$mainMod, mouse:272, movewindow"
+        "$mainMod, mouse:273, resizewindow"
+      ];
       bind = [
         "$mainMod, RETURN, exec, kitty"
-        "$mainMod, A, exec, cursor"
+        "$mainMod, A, exec, /projects/cursor/cursor"
         "$mainMod, B, exec, brave"
         "$mainMod, D, exec, signal-desktop"
         "$mainMod, S, exec, spotify"
@@ -116,8 +120,6 @@
         "$mainMod, right, movefocus, r"
         "$mainMod, up, movefocus, u"
         "$mainMod, down, movefocus, d"
-        "$mainMod, mouse:272, movewindow"
-        "$mainMod, mouse:273, resizewindow"
         "$mainMod, G, togglegroup"
         "$mainMod, K, swapsplit"
         "$mainMod CTRL, Q, exec, wlogout"
@@ -136,7 +138,7 @@
         gaps_out = 14;
         border_size = 3;
         "col.active_border" = "$color11";
-        "col.inactive_border" = "color8";
+        "col.inactive_border" = "$color8";
         layout = "dwindle";
         resize_on_border = true;
       };
@@ -165,6 +167,7 @@
         "waybar"
         "hyprpaper"
       ];
+      monitor = "eDP-1,2880x1920@120,0x0,1.5";
     };
     systemd = {
       enable = true;

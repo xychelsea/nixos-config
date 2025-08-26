@@ -5,7 +5,7 @@
 
     font = {
       name = "FiraCode Nerd Font";
-      size = 10;
+      size = 12;
     };
     settings = {
       bold_font                   = "auto";

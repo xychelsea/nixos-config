@@ -3,15 +3,16 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
+    sessionVariables = {
+      EDITOR = "nvim";
+    };
     shellAliases = {
       ls = "eza -a --icons=always";
       ll = "eza -al --icons=always";
       lt = "eza -a --tree --level=1 --icons=always";
       shutdown = "systemctl poweroff";
     };
-    profileExtra = ''
-export EDITOR = nvim
-eval "$(starship init bash)"
+    bashrcExtra = ''
 if [[ $(tty) == *"pts"* ]]; then
   fastfetch
 else
@@ -23,6 +24,8 @@ else
     echo "Start Hyprland with command Hyprland"
   fi
 fi
+
+eval "$(starship init bash)"
     '';
   };
 }

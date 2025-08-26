@@ -61,14 +61,14 @@
           "on-click" = "bash -c waypaper &";
           "tooltip-format" = "Select a wallpaper";
         };
-        "custom/appmenuicon" = {
-          "format" = "";
-          "on-click" = "sleep 0.2;rofi -show drun -replace";
+        "custom/appmenu" = {
+          "format" = "󱄅";
+          "on-click" = "sleep 0.2; rofi -show drun -replace";
           "tooltip-format" = "Open the application launcher";
         };
         "custom/exit" = {
           "format" = "";
-          "on-click" = "~/.config/hypr/scripts/logout.sh";
+          "on-click" = "/etc/nixos/scripts/logout.sh";
           "tooltip-format" = "Power menu";
         };
         "custom/notification" = {
@@ -94,8 +94,8 @@
         "custom/hyprshade" = {
           "format" = "󰃟";
           "tooltip-format" = "Toggle Screen Shader";
-          "on-click" = "sleep 0.5; ~/.config/hypr/scripts/hyprshade.sh";
-          "on-click-right" = "sleep 0.5; ~/.config/hypr/scripts/hyprshade.sh rofi";
+          "on-click" = "sleep 0.5; ~/etc/nixos/scripts/hyprshade.sh";
+          "on-click-right" = "sleep 0.5; ~/etc/nixos/scripts/hyprshade.sh rofi";
         };
         "custom/hypridle" = {
           "format" = "";
@@ -103,8 +103,8 @@
           "escape" = true;
           "exec-on-event" = true;
           "interval" = 60;
-          "exec" = "~/.config/hypr/scripts/hypridle.sh status";
-          "on-click" = "~/.config/hypr/scripts/hypridle.sh toggle";
+          "exec" = "~/etc/nixos/scripts/hypridle.sh status";
+          "on-click" = "~/etc/nixos/scripts/hypridle.sh toggle";
         };
         "keyboard-state" = {
           "numlock" = true;
@@ -137,21 +137,6 @@
         "hyprland/language" = {
           "format" = " {short}";
         };
-        "group/hardware" = {
-          "orientation" = "inherit";
-          "drawer" = {
-            "transition-duration" = 300;
-            "children-class" = "not-memory";
-            "transition-left-to-right" = false;
-          };
-          "modules" = [
-            "custom/system"
-            "disk"
-            "cpu"
-            "memory"
-            "hyprland/language"
-          ];
-        };
         "group/tools" = {
           "orientation" = "inherit";
           "drawer" = {
@@ -164,12 +149,6 @@
             "custom/cliphist"
             "custom/hypridle"
             "custom/hyprshade"
-          ];
-        };
-        "group/links" = {
-          "orientation" = "horizontal";
-          "modules" = [
-            "custom/empty"
           ];
         };
         "group/settings" = {
@@ -282,8 +261,6 @@
         };
         "modules-left" = [
           "custom/appmenu"
-          "group/links"
-          "group/quicklinks"
           "hyprland/window"
           "custom/empty"
         ];
@@ -296,7 +273,10 @@
           "network"
           "battery"
           "power-profiles-daemon"
-          "group/hardware"
+          "disk"
+          "cpu"
+          "memory"
+          "hyprland/language"
           "group/tools"
           "tray"
           "custom/notification"
@@ -340,7 +320,7 @@ window#waybar {
     font-weight: bold;
     font-style: normal;
     opacity: 0.7;
-    font-size: 14px;
+    font-size: 16px;
     color: @textcolor1;
 }
 
@@ -389,7 +369,7 @@ tooltip label {
     padding: 2px 10px 0px 10px;
     border-radius: 12px;
     color:@textcolor2;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: normal;
     opacity: 0.8;
 }
@@ -464,7 +444,7 @@ window#waybar.empty #window {
 #custom-quicklink10,
 #custom-waybarthemes {
     margin-right: 16px;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
     opacity: 0.8;
     color: @iconcolor;
@@ -533,7 +513,7 @@ window#waybar.empty #window {
 #custom-notification {
     margin: 0px 13px 0px 0px;
     padding:0px;
-    font-size: 16px;
+    font-size: 20px;
     color: @iconcolor;
     opacity: 0.8;
 }
@@ -541,7 +521,7 @@ window#waybar.empty #window {
 #custom-exit {
     margin: 0px 13px 0px 0px;
     padding: 0px;
-    font-size: 16px;
+    font-size: 20px;
     color: @iconcolor;
     opacity: 0.8;
 }
@@ -573,7 +553,7 @@ window#waybar.empty #window {
 #disk,#memory,#cpu,#language {
     margin: 0px;
     padding: 0px;
-    font-size: 14px;
+    font-size: 16px;
     color: @iconcolor;
 }
 
@@ -584,13 +564,13 @@ window#waybar.empty #window {
 #power-profiles-daemon {
     margin: 0px 13px 0px 0px;
     padding: 0px;
-    font-size: 14px;
+    font-size: 16px;
     color: @iconcolor;
 }
 
 #clock {
     background-color: @backgrounddark;
-    font-size: 14px;
+    font-size: 16px;
     color: @textcolor1;
     border-radius: 15px;
     padding: 1px 10px 0px 10px;
@@ -601,7 +581,7 @@ window#waybar.empty #window {
 
 #backlight {
     background-color: @backgroundlight;
-    font-size: 14px;
+    font-size: 16px;
     color: @textcolor2;
     border-radius: 15px;
     padding: 2px 10px 0px 10px;
@@ -611,7 +591,7 @@ window#waybar.empty #window {
 
 #pulseaudio {
     background-color: @backgroundlight;
-    font-size: 14px;
+    font-size: 16px;
     color: @textcolor2;
     border-radius: 15px;
     padding: 2px 10px 0px 10px;
@@ -626,7 +606,7 @@ window#waybar.empty #window {
 
 #network {
     background-color: @backgroundlight;
-    font-size: 14px;
+    font-size: 16px;
     color: @textcolor2;
     border-radius: 15px;
     padding: 2px 10px 0px 10px;
@@ -646,7 +626,7 @@ window#waybar.empty #window {
 
 #bluetooth, #bluetooth.on, #bluetooth.connected {
     background-color: @backgroundlight;
-    font-size: 14px;
+    font-size: 16px;
     color: @textcolor2;
     border-radius: 15px;
     padding: 2px 10px 0px 10px;
@@ -662,7 +642,7 @@ window#waybar.empty #window {
 
 #battery {
     background-color: @backgroundlight;
-    font-size: 14px;
+    font-size: 16px;
     color: @textcolor2;
     border-radius: 15px;
     padding: 2px 15px 0px 10px;
