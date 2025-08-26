@@ -1,0 +1,203 @@
+configuration {
+  modi: "drun,filebrowser,window,run";
+  show-icons: true;
+  icon-theme: "Papirus-Dark";
+  display-drun: "";
+  display-run: "";
+  display-filebrowser: "";
+  display-window: "";
+  drun-display-format: "{name}";
+  hover-select: false;
+  scroll-method: 1;
+  me-select-entry: "";
+  me-accept-entry: "MousePrimary";
+  window-format: "{w} · {c} · {t}";
+}
+
+window {
+  height: 35em;
+  width: 56em;
+  transparency: "real";
+  fullscreen: false;
+  enabled: true;
+  cursor: "default";
+  spacing: 0em;
+  padding: 0em;
+  border: 3px;
+  border-color: #b2c5ff;
+  border-radius: 2em;
+  background-color: rgba(42,48,66,0.7);
+}
+
+mainbox {
+  enabled: true;
+  spacing: 0px;
+  padding: 0px;
+  orientation: vertical;
+  children: [ "inputbar" , "listbox" ];
+  background-color: transparent;
+}
+
+inputbar {
+  enabled: true;
+  spacing: 0px;
+  padding: 5em;
+  children: [ "textbox-prompt-colon", "entry" ];
+  background-color: transparent;
+}
+
+textbox-prompt-colon {
+  enabled: true;
+  expand: false;
+  str: "  ";
+  padding: 1em 0.2em 0em 0em;
+  text-color: #e3e2e9;
+  border-radius: 2em 0em 0em 2em;
+  background-color: transparent;
+}
+
+entry {
+  enabled: true;
+  border-radius: 0em 2em 2em 0em;
+  spacing: 1em;
+  padding: 1em;
+  background-color: transparent;
+  text-color: #e3e2e9;
+  cursor: text;
+  placeholder: "Search";
+  placeholder-color: inherit;
+}
+
+listbox {
+  padding: 0em;
+  spacing: 0em;
+  orientation: horizontal;
+  children: [ "listview" , "mode-switcher" ];
+  background-color: rgba(42, 48, 66, 0.7);
+}
+
+listview {
+  border: 0px;
+  padding: 1.5em;
+  spacing: 0.5em;
+  enabled: true;
+  columns: 2;
+  lines: 3;
+  cycle: true;
+  dynamic: true;
+  scrollbar: false;
+  layout: vertical;
+  reverse: false;
+  fixed-height: true;
+  fixed-columns: true;
+  cursor: "default";
+  background-color: transparent;
+  text-color: #e3e2e9;
+}
+
+mode-switcher {
+  orientation: vertical;
+  width: 6.6em;
+  enabled: true;
+  padding: 1.5em;
+  spacing: 1.5em;
+  background-color: transparent;
+}
+
+button {
+  cursor:                      pointer;
+  border-radius:               2em;
+  background-color: rgba(42, 48, 66, 0.7);
+  text-color: #e3e2e9;
+}
+
+button selected {
+  background-color: #001848;
+  text-color: #e3e2e9;
+}
+
+element {
+  enabled: true;
+  spacing: 0em;
+  padding: 0.5em;
+  cursor: pointer;
+  background-color: transparent;
+  text-color: #e3e2e9;
+}
+
+element selected.normal {
+  background-color: #001848;
+  text-color: #e3e2e9;
+  border-radius: 1.5em;
+}
+
+element normal.normal {
+  background-color: inherit;
+  text-color: #e3e2e9;
+}
+
+element normal.urgent {
+  background-color: inherit;
+  text-color: #e3e2e9;
+}
+
+element normal.active {
+  background-color: inherit;
+  text-color: #e3e2e9;
+}
+
+element selected.urgent {
+  background-color: inherit;
+  text-color: #e3e2e9;
+}
+
+element selected.active {
+  background-color: inherit;
+  text-color: #e3e2e9;
+}
+
+element alternate.normal {
+  background-color: inherit;
+  text-color: #e3e2e9;
+}
+
+element alternate.urgent {
+  background-color: inherit;
+  text-color: #e3e2e9;
+}
+
+element alternate.active {
+  background-color: inherit;
+  text-color: #e3e2e9;
+}
+
+element-icon {
+  size: 3em;
+  cursor: inherit;
+  background-color: transparent;
+  text-color: inherit;
+  border-radius: 0em;
+}
+
+element-text {
+  vertical-align: 0.5;
+  horizontal-align: 0.1;
+  cursor: inherit;
+  background-color: transparent;
+  text-color: inherit;
+}
+
+error-message {
+  text-color: #e3e2e9;
+  background-color: rgba(42, 48, 66, 0.7);
+  text-transform: capitalize;
+  children: [ "textbox" ];
+}
+
+textbox {
+  text-color: inherit;
+  background-color: inherit;
+  vertical-align: 0.5;
+  horizontal-align: 0.5;
+}
+

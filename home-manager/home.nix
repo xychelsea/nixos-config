@@ -6,6 +6,7 @@
     ./modules/hyprland.nix
     ./modules/hyprpaper.nix
     ./modules/kitty.nix
+    ./modules/rofi.nix
     ./modules/starship.nix
     ./modules/waybar.nix
     ./modules/wlogout.nix
