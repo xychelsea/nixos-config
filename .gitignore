@@ -2,5 +2,8 @@
 result
 result-*
 
+# Ignore hardware configurations
+*hardward-configuration.nix
+
 # Ignore automatically generated direnv output
 .direnv

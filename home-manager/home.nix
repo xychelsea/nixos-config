@@ -1,0 +1,48 @@
+{ config, pkgs, lib, ... }:
+{
+  imports = [
+    ./modules/bash.nix
+    ./modules/fastfetch.nix
+    ./modules/hyprland.nix
+    ./modules/hyprpaper.nix
+    ./modules/kitty.nix
+    ./modules/starship.nix
+    ./modules/waybar.nix
+    ./modules/wlogout.nix
+    ./modules/xdg.nix
+  ];
+  home = {
+    username = "xychelsea";
+    homeDirectory = "/home/xychelsea";
+    stateVersion = "25.05";
+    packages = [ ];
+    file = { };
+    pointerCursor = {
+      name = "Bibata-Modern-Ice";
+      package = pkgs.bibata-cursors;
+      size = 24;
+      gtk.enable = true;
+      x11.enable = true;
+    };
+    sessionVariables = {
+      XCURSOR_THEME = "Bibata-Modern-Ice";
+      XCURSOR_SIZE = "24";
+      EDITOR = "nvim";
+    };
+  };
+  fonts.fontconfig.enable = true;
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
+    gtk3.extraConfig = {
+      "gtk-application-prefer-dark-theme" = 1;
+    };
+    gtk4.extraConfig = {
+      "gtk-application-prefer-dark-theme" = true;
+    };
+  };
+}
+
