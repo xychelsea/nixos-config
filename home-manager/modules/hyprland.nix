@@ -108,7 +108,7 @@
       ];
       bind = [
         "$mainMod, RETURN, exec, kitty"
-        "$mainMod, A, exec, /projects/cursor/cursor"
+        "$mainMod, A, exec, cursor"
         "$mainMod, B, exec, brave"
         "$mainMod, D, exec, signal-desktop"
         "$mainMod, S, exec, spotify"
