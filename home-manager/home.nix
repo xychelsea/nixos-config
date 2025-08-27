@@ -8,6 +8,7 @@
     ./modules/hyprpaper.nix
     ./modules/kitty.nix
     ./modules/rofi.nix
+    ./modules/signal-desktop.nix
     ./modules/starship.nix
     ./modules/waybar.nix
     ./modules/wlogout.nix
