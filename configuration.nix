@@ -8,7 +8,15 @@ let
 in
 {
   system.stateVersion = "25.05";
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+  nix.settings = {
+    auto-optimise-store = true;
+    experimental-features = [ "nix-command" "flakes" ];
+  };
   imports = [
     ./hardware-configuration.nix
     (import "${homeManager}/nixos")
@@ -95,8 +103,9 @@ in
       withUWSM = true;
     };
   };
-  services.xserver = {
-    enable = true;
+  security.rtkit.enable = true;
+  services.btrfs.autoScrub = {
+    fileSystems = [ "/persist" ];
   };
   services.displayManager = {
     sddm = {
@@ -105,13 +114,16 @@ in
     };
     defaultSession = "hyprland-uwsm";
   };
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
+  services.fstrim.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+  };
+  services.pulseaudio.enable = false;
+  services.xserver = {
+    enable = true;
   };
   users.users.xychelsea = {
     isNormalUser = true;
