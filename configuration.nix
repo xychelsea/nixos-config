@@ -105,6 +105,7 @@ in
   };
   security.rtkit.enable = true;
   services.btrfs.autoScrub = {
+    enable = true;
     fileSystems = [ "/persist" ];
   };
   services.displayManager = {
