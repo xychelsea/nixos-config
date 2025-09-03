@@ -44,6 +44,7 @@
 
     window {
         background-size: cover;
+        background-color: #1e1e2e;
         font-size: 16pt;
         color: #ffffff;
     }
@@ -53,6 +54,7 @@
         background-position: center;
         background-size: 20%;
         background-color: rgba(200, 220, 255, 0);
+        color: #cdd6f4;
         animation: gradient_f 20s ease-in infinite;
         border-radius: 80px;
         border: 0px;
@@ -65,7 +67,7 @@
     }
 
     button:hover {
-        background-color: #182e60;
+        background-color: #45475a;
         opacity: 0.8;
         color: #cdd6f4;
         background-size: 30%;
