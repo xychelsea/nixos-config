@@ -58,23 +58,25 @@
       "$color8" = "$on_primary_fixed";
       "$color11" = "$on_surface";
       env = [
-        "XDG_CURRENT_DESKTOP,Hyprland"
-        "XDG_SESSION_TYPE,wayland"
-        "XDG_SESSION_DESKTOP,Hyprland"
+        "CLUTTER_BACKEND,wayland"
+        "ELECTRON_OZONE_PLATFORM_HINT,wayland"
+        "GDK_SCALE,1"
+        "GDK_BACKEND,wayland,x11,*"
+        "GTK_THEME,Catppuccin:dark"
+        "OZONE_PLATFORM,wayland"
+        "MOZ_ENABLE_WAYLAND,1"
+        "QT_AUTO_SCREEN_SCALE_FACTOR,1"
         "QT_QPA_PLATFORM,wayland;xcb"
         "QT_QPA_PLATFORMTHEME,qt6ct"
         "QT_QPA_PLATFORMTHEME,qt5ct"
+        "QT_STYLE_OVERRIDE,Catppuccin-Dark"
         "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
-        "QT_AUTO_SCREEN_SCALE_FACTOR,1"
-        "GDK_SCALE,1"
-        "GDK_BACKEND,wayland,x11,*"
-        "CLUTTER_BACKEND,wayland"
-        "MOZ_ENABLE_WAYLAND,1"
-        "XCURSOR_THEME,Bibata-Modern-Ice"
-        "XCURSOR_SIZE,24"
-        "OZONE_PLATFORM,wayland"
-        "ELECTRON_OZONE_PLATFORM_HINT,wayland"
         "SDL_VIDEODRIVER,wayland"
+        "XCURSOR_SIZE,24"
+        "XCURSOR_THEME,Bibata-Modern-Ice"
+        "XDG_CURRENT_DESKTOP,Hyprland"
+        "XDG_SESSION_TYPE,wayland"
+        "XDG_SESSION_DESKTOP,Hyprland"
       ];
       input = {
         kb_layout = "us";

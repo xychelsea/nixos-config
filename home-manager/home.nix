@@ -36,6 +36,9 @@
   fonts.fontconfig.enable = true;
   gtk = {
     enable = true;
+    theme = {
+      name = "Catppuccin";
+    };
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
@@ -46,6 +49,10 @@
     gtk4.extraConfig = {
       "gtk-application-prefer-dark-theme" = true;
     };
+  };
+  dconf.settings."org/gnome/desktop/interface" = {
+    color-scheme = "prefer-dark";
+    gtk-theme = "Catppuccin";
   };
 }
 

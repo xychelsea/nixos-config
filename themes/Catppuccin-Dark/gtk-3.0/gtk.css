@@ -2430,7 +2430,7 @@ scrollbar slider {
   box-shadow: none;
   outline: none;
   transition: all 200ms linear;
-  background-color: color-mix(in srgb, currentColor 40%, transparent);
+  background-color: rgba(239, 241, 245, 0.5);
 }
 
 scrollbar slider:hover {
@@ -2472,7 +2472,6 @@ scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider {
   margin: 0;
   min-width: 4px;
   min-height: 4px;
-  background-color: color-mix(in srgb, currentColor 40%, transparent);
   border: none;
 }
 
@@ -6405,7 +6404,7 @@ window.background.chromium > menubar {
 
 window.background.chromium menu {
   background-color: #232634;
-  border-color: 1px solid #3c3c5c;
+  border: 1px solid rgba(30, 30, 46, 0.75);
   border-radius: 0;
 }
 

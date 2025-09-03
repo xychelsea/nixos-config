@@ -3284,7 +3284,7 @@ scrollbar > range > trough > slider {
   box-shadow: none;
   outline: none;
   transition: all 200ms linear;
-  background-color: color-mix(in srgb, currentColor 40%, transparent);
+  background-color: rgba(239, 241, 245, 0.5);
 }
 
 scrollbar > range > trough > slider:hover {
@@ -3339,7 +3339,6 @@ scrollbar.overlay-indicator:not(.dragging):not(.hovering) > range > trough > sli
   margin: 0;
   min-width: 4px;
   min-height: 4px;
-  background-color: color-mix(in srgb, #eff1f5 70%, #1e1e2e);
   border: none;
 }
 
@@ -4206,7 +4205,8 @@ row > box.header > box.title {
   border-spacing: 3px;
 }
 
-.nautilus-window .nautilus-grid-view child.activatable, columnview.view > header > button,
+.nautilus-window .nautilus-grid-view child.activatable,
+.nautilus-window .nautilus-list-view child.activatable, columnview.view > header > button,
 treeview.view > header > button, row.activatable {
   transition: all 75ms cubic-bezier(0, 0, 0.2, 1), background-size 300ms cubic-bezier(0, 0, 0.2, 1), background-image 1200ms cubic-bezier(0, 0, 0.2, 1), font-weight 0;
   outline: none;
@@ -4219,7 +4219,8 @@ treeview.view > header > button, row.activatable {
   outline: none;
 }
 
-.nautilus-window .nautilus-grid-view child.activatable:focus, columnview.view > header > button:focus,
+.nautilus-window .nautilus-grid-view child.activatable:focus,
+.nautilus-window .nautilus-list-view child.activatable:focus, columnview.view > header > button:focus,
 treeview.view > header > button:focus, row.activatable:focus {
   color: #eff1f5;
   background-color: transparent;
@@ -4227,15 +4228,18 @@ treeview.view > header > button:focus, row.activatable:focus {
   outline: none;
 }
 
-.nautilus-window .nautilus-grid-view child.activatable:hover, columnview.view > header > button:hover,
-treeview.view > header > button:hover, .nautilus-window .nautilus-grid-view child.has-open-popup.activatable, columnview.view > header > button.has-open-popup,
+.nautilus-window .nautilus-grid-view child.activatable:hover,
+.nautilus-window .nautilus-list-view child.activatable:hover, columnview.view > header > button:hover,
+treeview.view > header > button:hover, .nautilus-window .nautilus-grid-view child.has-open-popup.activatable,
+.nautilus-window .nautilus-list-view child.has-open-popup.activatable, columnview.view > header > button.has-open-popup,
 treeview.view > header > button.has-open-popup, row.activatable:hover, row.activatable.has-open-popup {
   color: #eff1f5;
   background-color: alpha(currentColor, 0.05);
   box-shadow: none;
 }
 
-.nautilus-window .nautilus-grid-view child.activatable:active, columnview.view > header > button:active,
+.nautilus-window .nautilus-grid-view child.activatable:active,
+.nautilus-window .nautilus-list-view child.activatable:active, columnview.view > header > button:active,
 treeview.view > header > button:active, row.activatable:active {
   transition: all 75ms cubic-bezier(0, 0, 0.2, 1), background-size 0ms, background-image 0ms, font-weight 0ms;
   animation: ripple 225ms cubic-bezier(0, 0, 0.2, 1) forwards;
@@ -4246,12 +4250,14 @@ treeview.view > header > button:active, row.activatable:active {
   box-shadow: none;
 }
 
-.nautilus-window .nautilus-grid-view child.activatable:selected, columnview.view > header > button:selected,
+.nautilus-window .nautilus-grid-view child.activatable:selected,
+.nautilus-window .nautilus-list-view child.activatable:selected, columnview.view > header > button:selected,
 treeview.view > header > button:selected, row.activatable:selected {
   background-color: alpha(currentColor, 0.06);
 }
 
-.nautilus-window .nautilus-grid-view child.activatable:selected:hover, columnview.view > header > button:selected:hover,
+.nautilus-window .nautilus-grid-view child.activatable:selected:hover,
+.nautilus-window .nautilus-list-view child.activatable:selected:hover, columnview.view > header > button:selected:hover,
 treeview.view > header > button:selected:hover, row.activatable:selected:hover {
   background-color: alpha(currentColor, 0.08);
 }
@@ -5660,19 +5666,6 @@ popover.entry-completion > contents {
   transition: none;
 }
 
-.nautilus-window placessidebar {
-  /* scrollbar { */
-  /* 	@extend %sidebar_scrollbar; */
-  /* 	@extend %round_scrollbar; */
-  /* } */
-}
-
-.nautilus-window placessidebar > scrolledwindow {
-  /* > viewport > .navigation-sidebar { */
-  /* 	@extend %sidebar_list; */
-  /* } */
-}
-
 .nautilus-window placesview label {
   color: rgba(239, 241, 245, 0.7);
 }
@@ -5681,23 +5674,28 @@ popover.entry-completion > contents {
   background-color: transparent;
 }
 
-.nautilus-window .nautilus-grid-view,
-.nautilus-window .nautilus-list-view {
-  /* @extend %content_style; */
-}
-
 .nautilus-window .nautilus-grid-view .view,
 .nautilus-window .nautilus-list-view .view {
   background-color: transparent;
 }
 
-.nautilus-window .nautilus-grid-view row.activatable > cell,
-.nautilus-window .nautilus-list-view row.activatable > cell {
-  padding: 0px;
-  margin: 0px;
+.nautilus-window .nautilus-grid-view listview.view > row.activatable > cell,
+.nautilus-window .nautilus-list-view listview.view > row.activatable > cell {
+  padding: 0;
 }
 
-.nautilus-window .nautilus-grid-view gridview.view {
+.nautilus-window .nautilus-grid-view listview.view > row.activatable > cell > widget#NautilusViewCell,
+.nautilus-window .nautilus-list-view listview.view > row.activatable > cell > widget#NautilusViewCell {
+  padding: 3px 9px;
+}
+
+.nautilus-window .nautilus-grid-view listview.view > row.activatable:nth-child(odd):not(:disabled),
+.nautilus-window .nautilus-list-view listview.view > row.activatable:nth-child(odd):not(:disabled) {
+  background-image: image(alpha(currentColor, 0.03));
+}
+
+.nautilus-window .nautilus-grid-view gridview.view,
+.nautilus-window .nautilus-list-view gridview.view {
   margin: 10px 5px;
   padding: 10px 5px;
 }
@@ -6271,22 +6269,6 @@ menubutton stack > box {
 .tweak-titlebar-left {
   box-shadow: inset 0 1px rgba(239, 241, 245, 0.1);
   border-top-left-radius: 12px;
-}
-
-.tweak-titlebar-left > windowhandle > box {
-  padding: 0px;
-  margin: 0 10px 0 15px;
-}
-
-.tweak-titlebar-left > windowhandle widget > box.start {
-  padding: 0px;
-  margin: 0;
-}
-
-.tweak-titlebar-left > windowhandle widget > box,
-.tweak-titlebar-left windowtitle {
-  padding: 0px;
-  margin: 0 -10px 0 10px;
 }
 
 .tweak-titlebar-left:backdrop {
@@ -7362,7 +7344,7 @@ calendar-view {
 .sidebar-pane .sidebar > scrolledwindow > scrollbar > range > trough > slider,
 .sidebar-pane toolbarview > scrolledwindow > scrollbar > range > trough > slider,
 .sidebar-pane navigation-view-page stack > scrolledwindow > scrollbar > range > trough > slider, placessidebar > scrolledwindow > scrollbar > range > trough > slider, leaflet.unfolded > box > scrolledwindow > scrollbar > range > trough > slider, leaflet.unfolded .contacts-contact-list > scrolledwindow > scrollbar > range > trough > slider, .sidebar-pane toolbarview > stack > box > widget > widget > scrolledwindow > scrollbar > range > trough > slider {
-  background-color: color-mix(in srgb, currentColor 40%, transparent);
+  background-color: rgba(239, 241, 245, 0.5);
 }
 
 .sidebar-pane .sidebar > scrolledwindow > scrollbar > range > trough > slider:hover,
@@ -7685,6 +7667,7 @@ viewswitcher {
 }
 
 viewswitcher.wide button.toggle {
+  background-color: rgba(239, 241, 245, 0.04);
   border-radius: 3px;
 }
 

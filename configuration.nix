@@ -102,6 +102,9 @@ in
       enable = true;
       withUWSM = true;
     };
+    dconf = {
+      enable = true;
+    };
   };
   security.rtkit.enable = true;
   services.btrfs.autoScrub = {
@@ -186,6 +189,7 @@ in
       ];
     };
     systemPackages = with pkgs; [
+      adwaita-qt
       brave
       curl
       clang
@@ -194,6 +198,7 @@ in
       git
       glib
       gnome-shell
+      gnome-themes-extra
       gtk-engine-murrine
       jq
       home-manager
