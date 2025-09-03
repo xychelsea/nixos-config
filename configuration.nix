@@ -211,6 +211,7 @@ in
       llvm
       neovim
       papirus-icon-theme
+      pavucontrol
       pyprland
       python3
       rofi
