@@ -28,9 +28,10 @@
       x11.enable = true;
     };
     sessionVariables = {
-      XCURSOR_THEME = "Bibata-Modern-Ice";
-      XCURSOR_SIZE = "24";
+      ELECTRON_OZONE_PLATFORM_HINT = "wayland";
       EDITOR = "nvim";
+      XCURSOR_SIZE = "24";
+      XCURSOR_THEME = "Bibata-Modern-Ice";
     };
   };
   fonts.fontconfig.enable = true;
