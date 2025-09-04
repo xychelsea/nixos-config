@@ -4,28 +4,28 @@
     enable = true;
     layout = [
       {
-        label = "lock";
-        action = "/etc/nixos/scripts/power.sh lock";
-        text = "Lock";
-        keybind = "l";
-      }
-      {
         label = "logout";
         action = "/etc/nixos/scripts/power.sh exit";
         text = "Log Out";
         keybind = "e";
       }
       {
-        label = "suspend";
-        action = "/etc/nixos/scripts/power.sh suspend";
-        text = "Suspend";
-        keybind = "u";
+        label = "lock";
+        action = "/etc/nixos/scripts/power.sh lock";
+        text = "Lock";
+        keybind = "l";
       }
       {
         label = "reboot";
         action = "/etc/nixos/scripts/power.sh reboot";
         text = "Restart";
         keybind = "r";
+      }
+      {
+        label = "suspend";
+        action = "/etc/nixos/scripts/power.sh suspend";
+        text = "Suspend";
+        keybind = "u";
       }
       {
         label = "shutdown";
