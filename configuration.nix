@@ -116,10 +116,12 @@ in
       enable = true;
       wayland.enable = true;
       package = pkgs.kdePackages.sddm;
-      extraPackages = with pkgs; [
-        sddm-astronaut
-        catppuccin-sddm
+      extraPackages = [
+        pkgs.sddm-astronaut
+        pkgs.catppuccin-sddm
       ];
+
+      theme = "catppuccin-mocha";
     };
     defaultSession = "hyprland-uwsm";
   };
