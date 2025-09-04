@@ -116,11 +116,6 @@ in
       enable = true;
       wayland.enable = true;
       package = pkgs.kdePackages.sddm;
-      extraPackages = [
-        pkgs.sddm-astronaut
-        pkgs.catppuccin-sddm
-      ];
-
       theme = "catppuccin-mocha";
     };
     defaultSession = "hyprland-uwsm";
@@ -198,6 +193,7 @@ in
     systemPackages = with pkgs; [
       adwaita-qt
       brave
+      catppuccin-sddm
       curl
       clang
       eza
