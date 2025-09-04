@@ -5,6 +5,7 @@
     ./modules/cursor.nix
     ./modules/fastfetch.nix
     ./modules/hyprland.nix
+    ./modules/hyprlock.nix
     ./modules/hyprpaper.nix
     ./modules/kitty.nix
     ./modules/rofi.nix
