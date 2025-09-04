@@ -117,6 +117,7 @@ in
       wayland.enable = true;
       package = pkgs.kdePackages.sddm;
       extraPackages = with pkgs; [
+        sddm-astronaut
         catppuccin-sddm
       ];
     };
@@ -168,7 +169,7 @@ in
           ".config"
           ".local"
           ".ssh"
-	  ".themes"
+          ".themes"
           "Documents"
           "Downloads"
           "Projects"
