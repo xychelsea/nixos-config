@@ -196,6 +196,8 @@ in
       catppuccin-sddm
       curl
       clang
+      docker
+      docker-compose
       eza
       gcc
       git
