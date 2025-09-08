@@ -159,6 +159,19 @@ in
     nerd-fonts.roboto-mono
   ];
   nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
+  virtualization.docker = {
+    enable = true;
+    daemon.settings = {
+      "data-root" = "/persist/var/lib/docker";
+      default-address-pools = [
+        {
+          base = "10.82.0.0/16";
+          size = 24;
+        }
+      ];
+    };
+    rootless.enable = true;
+  };
   environment = {
     persistence."/persist" = {
       users.xychelsea = {
@@ -184,6 +197,7 @@ in
         "/var/lib/nixos"
         "/var/lib/systemd/coredump"
         "/var/lib/bluetooth"
+        "/var/lib/docker"
         "/projects"
       ];
       files = [
