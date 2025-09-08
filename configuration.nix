@@ -159,7 +159,7 @@ in
     nerd-fonts.roboto-mono
   ];
   nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
-  virtualization.docker = {
+  virtualisation.docker = {
     enable = true;
     daemon.settings = {
       "data-root" = "/persist/var/lib/docker";
