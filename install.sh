@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-NIXOS_DISK=${NIXOS_DISK:-/dev/nvme0n1}
+NIXOS_DISK=${NIXOS_DISK:-/dev/sda}
 NIXOS_USER=xychelsea #${NIXOS_USER:-user}
-NIXOS_HOST=silverbox #${NIXOS_HOST:-nixos}
+NIXOS_HOST=raspi4 #${NIXOS_HOST:-nixos}
 
 NIXOS_BOOT_DIR=/boot/efi
 NIXOS_ROOT_DIR=/mnt
@@ -20,6 +20,7 @@ NIXOS_GTK_THEMES_DIR=${NIXOS_DIR}/themes
 NIXOS_GRUB_THEME_DIR=${NIXOS_DIR}/grub-theme
 
 NIXOS_CHANNEL_URL=https://nixos.org/channels/nixos-25.05
+NIXOS_HW_CHANNEL_URL=https://github.com/NixOS/nixos-hardware/archive/master.tar.gz
 NIXOS_HM_CHANNEL_URL=https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz
 
 NIXOS_CRYPT_NAME=nixos
@@ -218,7 +219,7 @@ EOF
 setup_encryption_and_btrfs() {
   step "Creating LUKS2 container and Btrfs filesystem"
   if ! cryptsetup isLuks "${NIXOS_ROOT_PART}"; then
-    run "cryptsetup luksFormat --type luks2 --batch-mode --pbkdf pbkdf2 '${NIXOS_ROOT_PART}'"
+    run "cryptsetup luksFormat --type luks2 --cipher aes-cbc-essiv:sha256 --key-size 256 --batch-mode --pbkdf pbkdf2 '${NIXOS_ROOT_PART}'"
   fi
   if [ ! -e "${NIXOS_CRYPT_PART}" ]; then
     run "cryptsetup open '${NIXOS_ROOT_PART}' '${NIXOS_CRYPT_NAME}'"
@@ -277,6 +278,7 @@ generate_and_stage_configs() {
 seed_channels() {
   step "Seeding Nix channels"
   run "nix-channel --add ${NIXOS_CHANNEL_URL} nixos"
+  run "nix-channel --add ${NIXOS_HW_CHANNEL_URL} nixos-hardware"
   run "nix-channel --add ${NIXOS_HM_CHANNEL_URL} home-manager"
   run "nix-channel --update"
 }
@@ -285,12 +287,14 @@ seed_target_channels() {
   step "Seeding Nix and Home-Manager channels inside the target"
   run "nixos-enter --root ${NIXOS_ROOT_DIR} -- sh -lc \
     'nix-channel --add ${NIXOS_CHANNEL_URL} nixos; \
+     nix-channel --add ${NIXOS_HW_CHANNEL_URL} nixos-hardware; \
      nix-channel --add ${NIXOS_HM_CHANNEL_URL} home-manager; \
      nix-channel --update'"
   run "nixos-enter --root ${NIXOS_ROOT_DIR} -- sh -lc \
     'id ${NIXOS_USER} >/dev/null 2>&1 && \
      su - ${NIXOS_USER} -c \
        \"nix-channel --add ${NIXOS_CHANNEL_URL} nixos; \
+        nix-channel --add ${NIXOS_HW_CHANNEL_URL} nixos-hardware; \
         nix-channel --add ${NIXOS_HM_CHANNEL_URL} home-manager; \
         nix-channel --update\" || true'"
 }

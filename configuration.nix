@@ -18,41 +18,39 @@ in
     experimental-features = [ "nix-command" "flakes" ];
   };
   imports = [
+    <nixos-hardware/raspberry-pi/4>
     ./hardware-configuration.nix
     (import "${homeManager}/nixos")
     (import "${impermanence}/nixos.nix")
   ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
   environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
-  console.keyMap = "us";
+  console = {
+    enable = false;
+    keyMap = "us";
+  };
   boot.loader.efi = {
     efiSysMountPoint = "/boot/efi";
     canTouchEfiVariables = true;
   };
   boot = {
-    loader.grub = {
-      enable = true;
-      efiSupport = true;
-      devices = [ "nodev" ];
-      theme = ./grub-theme;
-      gfxmodeEfi = "auto";
-      gfxpayloadEfi = "keep";
-      fontSize = 36;
-      enableCryptodisk = true;
-    };
+    loader.grub.enable = false;
+    loader.generic-extlinux-compatible.enable = true;
     initrd = {
       luks.devices.nixos = {
         allowDiscards = true;
         keyFile = "/cryptroot.key";
       };
-      secrets = {
-        "/cryptroot.key" = "/persist/etc/cryptsetup-keys.d/cryptroot.key";
-      };
     };
     kernelPackages = pkgs.linuxPackages_latest;
+    kernelParams = [
+      "snd_bcm2835.enable_hdmi=1"
+      "snd_bcm2835.enable_headphones=1"
+    ];
   };
-  networking.hostName = "silverbox";
+  networking.hostName = "raspi4";
   networking.networkmanager.enable = true;
+  networking.networkmanager.wifi.powersave = false;
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
@@ -159,6 +157,7 @@ in
     nerd-fonts.roboto-mono
   ];
   nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
+  nixpkgs.hostPlatform = "aarch64-linux";
   virtualisation.docker = {
     enable = true;
     daemon.settings = {
@@ -227,12 +226,14 @@ in
       hyprpaper
       hyprpicker
       hyprpolkitagent
+      libraspberrypi
       llvm
       neovim
       papirus-icon-theme
       pavucontrol
       pyprland
       python3
+      raspberrypi-eeprom
       rofi
       rustup
       sassc
