@@ -42,6 +42,7 @@ in
         keyFile = "/cryptroot.key";
       };
     };
+    supportedFilesystems = [ "btrfs" ];
     kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [
       "snd_bcm2835.enable_hdmi=1"
@@ -246,6 +247,9 @@ in
     useGlobalPkgs = true;
     useUserPackages = true;
     users.xychelsea = import ./home-manager/home.nix;
+  };
+  hardware = {
+    enableRedistributableFirmware = true;
   };
 }
 

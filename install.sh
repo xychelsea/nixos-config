@@ -5,7 +5,7 @@ NIXOS_DISK=${NIXOS_DISK:-/dev/sda}
 NIXOS_USER=xychelsea #${NIXOS_USER:-user}
 NIXOS_HOST=raspi4 #${NIXOS_HOST:-nixos}
 
-NIXOS_BOOT_DIR=/boot/efi
+NIXOS_BOOT_DIR=/boot/firmware
 NIXOS_ROOT_DIR=/mnt
 NIXOS_PART_OPTS="compress=zstd,noatime,discard=async"
 
@@ -213,7 +213,7 @@ EOF
   NIXOS_BOOT_PART="${NIXOS_DISK}${PARTSEP}1"
   NIXOS_ROOT_PART="${NIXOS_DISK}${PARTSEP}2"
 
-  run "mkfs.fat -F32 -n EFI ${NIXOS_BOOT_PART}"
+  run "mkfs.fat -F32 -n FIRMWARE ${NIXOS_BOOT_PART}"
 }
 
 setup_encryption_and_btrfs() {
@@ -358,7 +358,6 @@ main() {
   install_system
   fix_persistent_home
   seed_target_channels
-  verify_uefi
   set_user_password
   ok "Installation complete."
 }
