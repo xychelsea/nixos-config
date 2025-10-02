@@ -163,7 +163,7 @@ in
       nerd-fonts.roboto-mono
       vistafonts
     ];
-  }
+  };
   nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
   virtualisation.docker = {
     enable = true;
