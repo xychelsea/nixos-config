@@ -112,13 +112,13 @@ in
       pavucontrol
       pyprland
       python3
+      raspberrypifw
       raspberrypi-eeprom
-      raspberrypi-firmware
       rofi
       rustup
       sassc
       signal-desktop-bin
-      uboot-rpi_4_defconfig
+      ubootRaspberryPi4_64bit
       wget
       wlogout
     ];
