@@ -224,7 +224,7 @@ in
     hostPlatform = "aarch64-linux";
     overlays = [ (import "${homeManager}/overlay.nix") ];
     config = {
-      allowUnfree = false;
+      allowUnfree = true;
     };
   };
   programs = {
