@@ -14,14 +14,14 @@ in
         keyFile = "/cryptroot.key";
       };
     };
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_rpi4;
     kernelParams = [
       "snd_bcm2835.enable_hdmi=1"
       "snd_bcm2835.enable_headphones=1"
     ];
     loader = {
       efi = {
-        canTouchEfiVariables = true;
+        canTouchEfiVariables = false;
         efiSysMountPoint = "/boot/efi";
       };
       generic-extlinux-compatible = {
@@ -113,15 +113,25 @@ in
       pyprland
       python3
       raspberrypi-eeprom
+      raspberrypi-firmware
       rofi
       rustup
       sassc
       signal-desktop-bin
+      uboot-rpi_4_defconfig
       wget
       wlogout
     ];
   };
   fileSystems = {
+    "/boot/firmware" = {
+      device = "/dev/disk/by-label/FIRMWARE";
+      fsType = "vfat";
+      options = [
+        "fmask=0022"
+        "dmask=0022"
+      ];
+    };
     "/persist" = {
       device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
@@ -287,6 +297,36 @@ in
     };
   };
   system = {
+    activationScripts.populateRpiFirmware = {
+      text = ''
+        set -eu
+        dst=/boot/firmware
+        mkdir -p "$dst"
+
+        # Copy firmware files (start4.elf, fixups, overlays, dtbs) if missing
+        if [ ! -f "$dst/start4.elf" ]; then
+          cp -av ${pkgs.raspberrypifw}/share/raspberrypi/boot/* "$dst"/
+        fi
+
+        # Ensure U-Boot binary is present for the extlinux hand-off
+        if [ ! -f "$dst/u-boot.bin" ]; then
+          cp -av ${pkgs.uBootRaspberryPi4_64bit}/u-boot.bin "$dst"/
+        fi
+
+        # Provide a sane default config.txt if none exists
+        if [ ! -f "$dst/config.txt" ]; then
+          cat >"$dst/config.txt" <<'EOF'
+arm_64bit=1
+# Use KMS driver; enables HDMI and 3D on Pi 4
+dtoverlay=vc4-kms-v3d
+# Optional but helpful during bring-up
+enable_uart=1
+# Audio on; you can tune later
+dtparam=audio=on
+EOF
+        fi
+      '';
+    };
     stateVersion = "25.05";
   };
   time = {
