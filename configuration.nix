@@ -190,18 +190,24 @@ in
   ];
   networking = {
     hostName = "silverbox";
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+    };
   };
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d";
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 14d";
+    };
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" ];
+    };
   };
-  nix.settings = {
-    auto-optimise-store = true;
-    experimental-features = [ "nix-command" "flakes" ];
+  nixpkgs = {
+    overlays = [ (import "${homeManager}/overlay.nix") ];
   };
-  nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
   system.stateVersion = "25.05";
   time.timeZone = "America/New_York";
   programs = {
