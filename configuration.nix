@@ -116,8 +116,8 @@ in
   fileSystems = {
     "/persist" = {
       device = "/dev/disk/by-label/nixos";
-      neededForBoot = true;
       fsType = "btrfs";
+      neededForBoot = true;
       options = [
         "subvol=@persist"
         "compress=zstd"
@@ -145,6 +145,29 @@ in
         "discard=async"
       ];
     };
+  };
+  fonts = {
+    enableGhostscriptFonts = true;
+    fontDir = {
+      enable = true;
+    };
+    packages = with pkgs; [
+      corefonts
+      font-awesome
+      nerd-fonts.bitstream-vera-sans-mono
+      nerd-fonts.dejavu-sans-mono
+      nerd-fonts.fira-code
+      nerd-fonts.fira-mono
+      nerd-fonts.liberation
+      nerd-fonts.noto
+      nerd-fonts.roboto-mono
+      vistafonts
+    ];
+  };
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.xychelsea = import ./home-manager/home.nix;
   };
   system.stateVersion = "25.05";
   nix.gc = {
@@ -236,22 +259,6 @@ in
   security.rtkit.enable = true;
   security.sudo.enable = true;
   security.sudo.wheelNeedsPassword = false;
-  fonts = {
-    fontDir.enable = true;
-    enableGhostscriptFonts = true;
-    packages = with pkgs; [
-      corefonts
-      font-awesome
-      nerd-fonts.bitstream-vera-sans-mono
-      nerd-fonts.dejavu-sans-mono
-      nerd-fonts.fira-code
-      nerd-fonts.fira-mono
-      nerd-fonts.liberation
-      nerd-fonts.noto
-      nerd-fonts.roboto-mono
-      vistafonts
-    ];
-  };
   nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
   virtualisation.docker = {
     enable = true;
@@ -265,11 +272,6 @@ in
       ];
     };
     rootless.enable = true;
-  };
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users.xychelsea = import ./home-manager/home.nix;
   };
 }
 
