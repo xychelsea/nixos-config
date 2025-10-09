@@ -7,6 +7,37 @@ let
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
 in
 {
+  boot = {
+    efi = {
+      efiSysMountPoint = "/boot/efi";
+      canTouchEfiVariables = true;
+    };
+    initrd = {
+      luks.devices.nixos = {
+        allowDiscards = true;
+        keyFile = "/cryptroot.key";
+      };
+      secrets = {
+        "/cryptroot.key" = "/persist/etc/cryptsetup-keys.d/cryptroot.key";
+      };
+    };
+    kernelPackages = pkgs.linuxPackages_latest;
+    loader = {
+      grub = {
+        enable = true;
+        efiSupport = true;
+        devices = [ "nodev" ];
+        theme = ./grub-theme;
+        gfxmodeEfi = "auto";
+        gfxpayloadEfi = "keep";
+        fontSize = 36;
+        enableCryptodisk = true;
+      };
+    };
+  };
+  console = {
+    keyMap = "us";
+  };
   system.stateVersion = "25.05";
   nix.gc = {
     automatic = true;
@@ -27,33 +58,6 @@ in
       NIXOS_OZONE_WL = "1";
       WLR_NO_HARDWARE_CURSORS = "1";
     };
-  };
-  console.keyMap = "us";
-  boot.loader.efi = {
-    efiSysMountPoint = "/boot/efi";
-    canTouchEfiVariables = true;
-  };
-  boot = {
-    loader.grub = {
-      enable = true;
-      efiSupport = true;
-      devices = [ "nodev" ];
-      theme = ./grub-theme;
-      gfxmodeEfi = "auto";
-      gfxpayloadEfi = "keep";
-      fontSize = 36;
-      enableCryptodisk = true;
-    };
-    initrd = {
-      luks.devices.nixos = {
-        allowDiscards = true;
-        keyFile = "/cryptroot.key";
-      };
-      secrets = {
-        "/cryptroot.key" = "/persist/etc/cryptsetup-keys.d/cryptroot.key";
-      };
-    };
-    kernelPackages = pkgs.linuxPackages_latest;
   };
   networking.hostName = "silverbox";
   networking.networkmanager.enable = true;
