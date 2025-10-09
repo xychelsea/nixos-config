@@ -125,7 +125,7 @@ in
         "discard=async"
       ];
     };
-    fileSystems."/nix" = {
+    "/nix" = {
       device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
       options = [
@@ -135,7 +135,7 @@ in
         "discard=async"
       ];
     };
-    fileSystems."/home" = {
+    "/home" = {
       device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
       options = [
