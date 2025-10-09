@@ -21,21 +21,21 @@ in
     ];
     loader = {
       efi = {
-        efiSysMountPoint = "/boot/efi";
         canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
       };
       generic-extlinux-compatible = {
         enable = true;
       };
       grub = {
-        enable = false;
-        efiSupport = true;
         devices = [ "nodev" ];
-        theme = ./grub-theme;
+        enable = false;
+        enableCryptodisk = true;
+        efiSupport = true;
+        fontSize = 36;
         gfxmodeEfi = "auto";
         gfxpayloadEfi = "keep";
-        fontSize = 36;
-        enableCryptodisk = true;
+        theme = ./grub-theme;
       };
     };
     supportedFilesystems = [ "btrfs" ];
@@ -66,11 +66,11 @@ in
         "/etc/nixos"
         "/etc/NetworkManager/system-connections"
         "/etc/ssh"
+        "/projects"
         "/var/lib/nixos"
         "/var/lib/systemd/coredump"
         "/var/lib/bluetooth"
         "/var/lib/docker"
-        "/projects"
       ];
       files = [
         "/etc/machine-id"
@@ -246,17 +246,21 @@ in
     };
   };
   services = {
-    btrfs.autoScrub = {
-      enable = true;
-      fileSystems = [ "/persist" ];
+    btrfs = {
+      autoScrub = {
+        enable = true;
+        fileSystems = [ "/persist" ];
+      };
     };
     displayManager = {
       defaultSession = "hyprland-uwsm";
       sddm = {
         enable = true;
-        wayland.enable = true;
         package = pkgs.kdePackages.sddm;
         theme = "catppuccin-mocha";
+        wayland = {
+          enable = true;
+        };
       };
     };
     fstrim = {
