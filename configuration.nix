@@ -27,7 +27,7 @@ in
       };
       generic-extlinux-compatible = {
         enable = false;
-      }
+      };
       grub = {
         devices = [ "nodev" ];
         enable = true;
