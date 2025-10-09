@@ -167,7 +167,9 @@ in
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.xychelsea = import ./home-manager/home.nix;
+    users = {
+      xychelsea = import ./home-manager/home.nix;
+    };
   };
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -212,8 +214,6 @@ in
       allowUnfree = false;
     };
   };
-  system.stateVersion = "25.05";
-  time.timeZone = "America/New_York";
   programs = {
     hyprland = {
       enable = true;
@@ -223,19 +223,28 @@ in
       enable = true;
     };
   };
+  security = {
+    rtkit = {
+      enable = true;
+    };
+    sudo = {
+      enable = true;
+      wheelNeedsPassword = false;
+    };
+  };
   services = {
     btrfs.autoScrub = {
       enable = true;
       fileSystems = [ "/persist" ];
     };
     displayManager = {
+      defaultSession = "hyprland-uwsm";
       sddm = {
         enable = true;
         wayland.enable = true;
         package = pkgs.kdePackages.sddm;
         theme = "catppuccin-mocha";
       };
-      defaultSession = "hyprland-uwsm";
     };
     fstrim = {
       enable = true;
@@ -244,10 +253,14 @@ in
       enable = true;
     };
     pipewire = {
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
       enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
+      pulse = {
+        enable = true;
+      };
     };
     pulseaudio = {
       enable = false;
@@ -256,26 +269,30 @@ in
       enable = true;
     };
   };
-  users.users.xychelsea = {
-    isNormalUser = true;
-    description = "Primary user account";
-    uid = 1000;
-    group = "users";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "docker"
-    ];
-    initialPassword = "not-a-real-hardcoded-password";
-    shell = pkgs.bashInteractive;
-    packages = with pkgs; [
-    ];
+  system = {
+    stateVersion = "25.05";
   };
-  security.rtkit.enable = true;
-  security.sudo.enable = true;
-  security.sudo.wheelNeedsPassword = false;
+  time = {
+    timeZone = "America/New_York";
+  };
+  users.users = {
+    xychelsea = {
+      description = "Primary user account";
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "docker"
+      ];
+      group = "users";
+      initialPassword = "not-a-real-hardcoded-password";
+      isNormalUser = true;
+      packages = with pkgs; [
+      ];
+      shell = pkgs.bashInteractive;
+      uid = 1000;
+    };
+  };
   virtualisation.docker = {
-    enable = true;
     daemon.settings = {
       "data-root" = "/persist/var/lib/docker";
       default-address-pools = [
@@ -285,6 +302,7 @@ in
         }
       ];
     };
+    enable = true;
     rootless.enable = true;
   };
 }
