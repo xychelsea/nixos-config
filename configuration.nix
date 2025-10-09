@@ -127,6 +127,9 @@ in
     pulse.enable = true;
   };
   services.pulseaudio.enable = false;
+  services.mullvad-vpn = {
+    enable = true;
+  };
   services.xserver = {
     enable = true;
   };
@@ -147,16 +150,22 @@ in
   };
   security.sudo.enable = true;
   security.sudo.wheelNeedsPassword = false;
-  fonts.packages = with pkgs; [
-    font-awesome
-    nerd-fonts.bitstream-vera-sans-mono
-    nerd-fonts.dejavu-sans-mono
-    nerd-fonts.fira-code
-    nerd-fonts.fira-mono
-    nerd-fonts.liberation
-    nerd-fonts.noto
-    nerd-fonts.roboto-mono
-  ];
+  fonts = {
+    fontDir.enable = true;
+    enableGhostscriptFonts = true;
+    packages = with pkgs; [
+      corefonts
+      font-awesome
+      nerd-fonts.bitstream-vera-sans-mono
+      nerd-fonts.dejavu-sans-mono
+      nerd-fonts.fira-code
+      nerd-fonts.fira-mono
+      nerd-fonts.liberation
+      nerd-fonts.noto
+      nerd-fonts.roboto-mono
+      vistafonts
+    ];
+  };
   nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
   nixpkgs.hostPlatform = "aarch64-linux";
   virtualisation.docker = {
@@ -229,6 +238,8 @@ in
       hyprpolkitagent
       libraspberrypi
       llvm
+      mullvad
+      mullvad-vpn
       neovim
       papirus-icon-theme
       pavucontrol
