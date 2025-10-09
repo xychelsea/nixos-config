@@ -180,7 +180,31 @@ in
     useUserPackages = true;
     users.xychelsea = import ./home-manager/home.nix;
   };
-  system.stateVersion = "25.05";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "en_US.UTF-8";
+      LC_IDENTIFICATION = "en_US.UTF-8";
+      LC_MEASUREMENT = "en_US.UTF-8";
+      LC_MONETARY = "en_US.UTF-8";
+      LC_NAME = "en_US.UTF-8";
+      LC_NUMERIC = "en_US.UTF-8";
+      LC_PAPER = "en_US.UTF-8";
+      LC_TELEPHONE = "en_US.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
+  };
+  imports = [
+    <nixos-hardware/raspberry-pi/4>
+    ./hardware-configuration.nix
+    (import "${homeManager}/nixos")
+    (import "${impermanence}/nixos.nix")
+  ];
+  networking = {
+    hostName = "raspi4";
+    networkmanager.enable = true;
+    networkmanager.wifi.powersave = false;
+  };
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -190,28 +214,10 @@ in
     auto-optimise-store = true;
     experimental-features = [ "nix-command" "flakes" ];
   };
-  imports = [
-    <nixos-hardware/raspberry-pi/4>
-    ./hardware-configuration.nix
-    (import "${homeManager}/nixos")
-    (import "${impermanence}/nixos.nix")
-  ];
-  networking.hostName = "raspi4";
-  networking.networkmanager.enable = true;
-  networking.networkmanager.wifi.powersave = false;
+  nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
+  nixpkgs.hostPlatform = "aarch64-linux";
+  system.stateVersion = "25.05";
   time.timeZone = "America/New_York";
-  i18n.defaultLocale = "en_US.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-  };
   programs = {
     hyprland = {
       enable = true;
@@ -272,8 +278,6 @@ in
   security.rtkit.enable = true;
   security.sudo.enable = true;
   security.sudo.wheelNeedsPassword = false;
-  nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
-  nixpkgs.hostPlatform = "aarch64-linux";
   virtualisation.docker = {
     enable = true;
     daemon.settings = {
