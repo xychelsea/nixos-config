@@ -310,7 +310,7 @@ in
 
         # Ensure U-Boot binary is present for the extlinux hand-off
         if [ ! -f "$dst/u-boot.bin" ]; then
-          cp -av ${pkgs.uBootRaspberryPi4_64bit}/u-boot.bin "$dst"/
+          cp -av ${pkgs.ubootRaspberryPi4_64bit}/u-boot.bin "$dst"/
         fi
 
         # Provide a sane default config.txt if none exists
