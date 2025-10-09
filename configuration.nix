@@ -128,6 +128,9 @@ in
     pulse.enable = true;
   };
   services.pulseaudio.enable = false;
+  services.mulvad-vpn = {
+    enable = true;
+  };
   services.xserver = {
     enable = true;
   };
@@ -234,6 +237,8 @@ in
       hyprpicker
       hyprpolkitagent
       llvm
+      mullvad
+      mullvad-vpn
       neovim
       papirus-icon-theme
       pavucontrol
