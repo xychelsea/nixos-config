@@ -47,7 +47,7 @@ declare -A SUBVOL_OPTS=(
 )
 
 declare -A FS_DEV=(
-  ["/boot/efi"]="/dev/disk/by-label/EFI"
+  ["/boot/firmware"]="/dev/disk/by-label/FIRMWARE"
   ["/"]="/dev/disk/by-label/nixos"
   ["/nix"]="/dev/disk/by-label/nixos"
   ["/home"]="/dev/disk/by-label/nixos"
