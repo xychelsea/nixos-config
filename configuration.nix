@@ -23,8 +23,12 @@ in
     (import "${homeManager}/nixos")
     (import "${impermanence}/nixos.nix")
   ];
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-  environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
+  environment = {
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      WLR_NO_HARDWARE_CURSORS = "1";
+    };
+  };
   console = {
     enable = false;
     keyMap = "us";
@@ -105,33 +109,38 @@ in
       enable = true;
     };
   };
-  security.rtkit.enable = true;
-  services.btrfs.autoScrub = {
-    enable = true;
-    fileSystems = [ "/persist" ];
-  };
-  services.displayManager = {
-    sddm = {
+  services = {
+    btrfs.autoScrub = {
       enable = true;
-      wayland.enable = true;
-      package = pkgs.kdePackages.sddm;
-      theme = "catppuccin-mocha";
+      fileSystems = [ "/persist" ];
     };
-    defaultSession = "hyprland-uwsm";
-  };
-  services.fstrim.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-  services.pulseaudio.enable = false;
-  services.mullvad-vpn = {
-    enable = true;
-  };
-  services.xserver = {
-    enable = true;
+    displayManager = {
+      sddm = {
+        enable = true;
+        wayland.enable = true;
+        package = pkgs.kdePackages.sddm;
+        theme = "catppuccin-mocha";
+      };
+      defaultSession = "hyprland-uwsm";
+    };
+    fstrim = {
+      enable = true;
+    };
+    mullvad-vpn = {
+      enable = true;
+    };
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+    pulseaudio = {
+      enable = false;
+    };
+    xserver = {
+      enable = true;
+    };
   };
   users.users.xychelsea = {
     isNormalUser = true;
@@ -148,6 +157,7 @@ in
     packages = with pkgs; [
     ];
   };
+  security.rtkit.enable = true;
   security.sudo.enable = true;
   security.sudo.wheelNeedsPassword = false;
   fonts = {
