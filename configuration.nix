@@ -8,10 +8,6 @@ let
 in
 {
   boot = {
-    efi = {
-      efiSysMountPoint = "/boot/efi";
-      canTouchEfiVariables = true;
-    };
     initrd = {
       luks.devices.nixos = {
         allowDiscards = true;
@@ -23,6 +19,10 @@ in
     };
     kernelPackages = pkgs.linuxPackages_latest;
     loader = {
+      efi = {
+        efiSysMountPoint = "/boot/efi";
+        canTouchEfiVariables = true;
+      };
       grub = {
         enable = true;
         efiSupport = true;
