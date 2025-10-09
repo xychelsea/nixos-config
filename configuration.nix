@@ -202,20 +202,29 @@ in
   ];
   networking = {
     hostName = "raspi4";
-    networkmanager.enable = true;
-    networkmanager.wifi.powersave = false;
+    networkmanager = {
+      enable = true;
+      wifi.powersave = false;
+    };
   };
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d";
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 14d";
+    };
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" ];
+    };
   };
-  nix.settings = {
-    auto-optimise-store = true;
-    experimental-features = [ "nix-command" "flakes" ];
+  nixpkgs = {
+    hostPlatform = "aarch64-linux";
+    overlays = [ (import "${homeManager}/overlay.nix") ];
+    config = {
+      allowUnfree = false;
+    };
   };
-  nixpkgs.overlays = [ (import "${homeManager}/overlay.nix") ];
-  nixpkgs.hostPlatform = "aarch64-linux";
   system.stateVersion = "25.05";
   time.timeZone = "America/New_York";
   programs = {
