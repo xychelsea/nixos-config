@@ -38,6 +38,81 @@ in
   console = {
     keyMap = "us";
   };
+  environment = {
+    persistence."/persist" = {
+      users.xychelsea = {
+        directories = [
+          ".config"
+          ".local"
+          ".ssh"
+          ".themes"
+          "Documents"
+          "Downloads"
+          "Projects"
+        ];
+        files = [
+          ".bash_history"
+          ".zsh_history"
+        ];
+      };
+      directories = [
+        "/etc/cryptsetup-keys.d"
+        "/etc/nixos"
+        "/etc/NetworkManager/system-connections"
+        "/etc/ssh"
+        "/var/lib/nixos"
+        "/var/lib/systemd/coredump"
+        "/var/lib/bluetooth"
+        "/var/lib/docker"
+        "/projects"
+      ];
+      files = [
+        "/etc/machine-id"
+      ];
+    };
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      WLR_NO_HARDWARE_CURSORS = "1";
+    };
+    systemPackages = with pkgs; [
+      adwaita-qt
+      brave
+      catppuccin-sddm
+      curl
+      clang
+      docker
+      docker-compose
+      eza
+      gcc
+      git
+      glib
+      gnome-shell
+      gnome-themes-extra
+      gtk-engine-murrine
+      jq
+      home-manager
+      hyprcursor
+      hypridle
+      hyprlock
+      hyprpaper
+      hyprpicker
+      hyprpolkitagent
+      llvm
+      mullvad
+      mullvad-vpn
+      neovim
+      papirus-icon-theme
+      pavucontrol
+      pyprland
+      python3
+      rofi
+      rustup
+      sassc
+      signal-desktop-bin
+      wget
+      wlogout
+    ];
+  };
   system.stateVersion = "25.05";
   nix.gc = {
     automatic = true;
@@ -53,12 +128,6 @@ in
     (import "${homeManager}/nixos")
     (import "${impermanence}/nixos.nix")
   ];
-  environment = {
-    sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-      WLR_NO_HARDWARE_CURSORS = "1";
-    };
-  };
   networking.hostName = "silverbox";
   networking.networkmanager.enable = true;
   time.timeZone = "America/New_York";
@@ -194,77 +263,6 @@ in
       ];
     };
     rootless.enable = true;
-  };
-  environment = {
-    persistence."/persist" = {
-      users.xychelsea = {
-        directories = [
-          ".config"
-          ".local"
-          ".ssh"
-          ".themes"
-          "Documents"
-          "Downloads"
-          "Projects"
-        ];
-        files = [
-          ".bash_history"
-          ".zsh_history"
-        ];
-      };
-      directories = [
-        "/etc/cryptsetup-keys.d"
-        "/etc/nixos"
-        "/etc/NetworkManager/system-connections"
-        "/etc/ssh"
-        "/var/lib/nixos"
-        "/var/lib/systemd/coredump"
-        "/var/lib/bluetooth"
-        "/var/lib/docker"
-        "/projects"
-      ];
-      files = [
-        "/etc/machine-id"
-      ];
-    };
-    systemPackages = with pkgs; [
-      adwaita-qt
-      brave
-      catppuccin-sddm
-      curl
-      clang
-      docker
-      docker-compose
-      eza
-      gcc
-      git
-      glib
-      gnome-shell
-      gnome-themes-extra
-      gtk-engine-murrine
-      jq
-      home-manager
-      hyprcursor
-      hypridle
-      hyprlock
-      hyprpaper
-      hyprpicker
-      hyprpolkitagent
-      llvm
-      mullvad
-      mullvad-vpn
-      neovim
-      papirus-icon-theme
-      pavucontrol
-      pyprland
-      python3
-      rofi
-      rustup
-      sassc
-      signal-desktop-bin
-      wget
-      wlogout
-    ];
   };
   home-manager = {
     useGlobalPkgs = true;
