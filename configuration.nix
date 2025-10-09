@@ -207,6 +207,9 @@ in
   };
   nixpkgs = {
     overlays = [ (import "${homeManager}/overlay.nix") ];
+    config = {
+      allowUnfree = false;
+    };
   };
   system.stateVersion = "25.05";
   time.timeZone = "America/New_York";
