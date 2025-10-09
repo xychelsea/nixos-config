@@ -128,7 +128,7 @@ in
     pulse.enable = true;
   };
   services.pulseaudio.enable = false;
-  services.mulvad-vpn = {
+  services.mullvad-vpn = {
     enable = true;
   };
   services.xserver = {
