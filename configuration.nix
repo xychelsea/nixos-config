@@ -18,11 +18,16 @@ in
       };
     };
     kernelPackages = pkgs.linuxPackages_latest;
+    kernelParams = [
+    ];
     loader = {
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
       };
+      generic-extlinux-compatible = {
+        enable = false;
+      }
       grub = {
         devices = [ "nodev" ];
         enable = true;
@@ -34,8 +39,10 @@ in
         theme = ./grub-theme;
       };
     };
+    supportedFilesystems = [ "btrfs" ];
   };
   console = {
+    enable = true;
     keyMap = "us";
   };
   environment = {
