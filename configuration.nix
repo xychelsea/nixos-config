@@ -20,18 +20,18 @@ in
     kernelPackages = pkgs.linuxPackages_latest;
     loader = {
       efi = {
-        efiSysMountPoint = "/boot/efi";
         canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
       };
       grub = {
-        enable = true;
-        efiSupport = true;
         devices = [ "nodev" ];
-        theme = ./grub-theme;
+        enable = true;
+        enableCryptodisk = true;
+        efiSupport = true;
+        fontSize = 36;
         gfxmodeEfi = "auto";
         gfxpayloadEfi = "keep";
-        fontSize = 36;
-        enableCryptodisk = true;
+        theme = ./grub-theme;
       };
     };
   };
@@ -60,11 +60,11 @@ in
         "/etc/nixos"
         "/etc/NetworkManager/system-connections"
         "/etc/ssh"
+        "/projects"
         "/var/lib/nixos"
         "/var/lib/systemd/coredump"
         "/var/lib/bluetooth"
         "/var/lib/docker"
-        "/projects"
       ];
       files = [
         "/etc/machine-id"
@@ -191,7 +191,7 @@ in
     (import "${impermanence}/nixos.nix")
   ];
   networking = {
-    hostName = "silverbox";
+    hostName = "default";
     networkmanager = {
       enable = true;
     };
@@ -233,17 +233,21 @@ in
     };
   };
   services = {
-    btrfs.autoScrub = {
-      enable = true;
-      fileSystems = [ "/persist" ];
+    btrfs = {
+      autoScrub = {
+        enable = true;
+        fileSystems = [ "/persist" ];
+      };
     };
     displayManager = {
       defaultSession = "hyprland-uwsm";
       sddm = {
         enable = true;
-        wayland.enable = true;
         package = pkgs.kdePackages.sddm;
         theme = "catppuccin-mocha";
+        wayland = {
+          enable = true;
+        };
       };
     };
     fstrim = {
