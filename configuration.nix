@@ -113,6 +113,39 @@ in
       wlogout
     ];
   };
+  fileSystems = {
+    "/persist" = {
+      device = "/dev/disk/by-label/nixos";
+      neededForBoot = true;
+      fsType = "btrfs";
+      options = [
+        "subvol=@persist"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+      ];
+    };
+    fileSystems."/nix" = {
+      device = "/dev/disk/by-label/nixos";
+      fsType = "btrfs";
+      options = [
+        "subvol=@nix"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+      ];
+    };
+    fileSystems."/home" = {
+      device = "/dev/disk/by-label/nixos";
+      fsType = "btrfs";
+      options = [
+        "subvol=@home"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+      ];
+    };
+  };
   system.stateVersion = "25.05";
   nix.gc = {
     automatic = true;
@@ -142,37 +175,6 @@ in
     LC_PAPER = "en_US.UTF-8";
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
-  };
-  fileSystems."/persist" = {
-    device = "/dev/disk/by-label/nixos";
-    neededForBoot = true;
-    fsType = "btrfs";
-    options = [
-      "subvol=@persist"
-      "compress=zstd"
-      "noatime"
-      "discard=async"
-    ];
-  };
-  fileSystems."/nix" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "btrfs";
-    options = [
-      "subvol=@nix"
-      "compress=zstd"
-      "noatime"
-      "discard=async"
-    ];
-  };
-  fileSystems."/home" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "btrfs";
-    options = [
-      "subvol=@home"
-      "compress=zstd"
-      "noatime"
-      "discard=async"
-    ];
   };
   programs = {
     hyprland = {
