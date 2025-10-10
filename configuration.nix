@@ -171,6 +171,8 @@ in
       vistafonts
     ];
   };
+  hardware = {
+  };
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
