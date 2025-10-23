@@ -536,14 +536,14 @@ window#waybar.empty #window {
     color: #ffffff;
 }
 
-#cpu,#memory,#disk {
+#disk,#cpu,#memory {
     margin: 0px;
     padding: 0px;
     font-size: 16px;
     color: #ffffff;
 }
 
-#disk {
+#memory {
     margin-right:10px;
 }
 
