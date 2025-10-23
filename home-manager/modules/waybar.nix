@@ -134,9 +134,6 @@
           "format" = "󰋊 {percentage_used}% ";
           "path" = "/";
         };
-        "hyprland/language" = {
-          "format" = "  {short}";
-        };
         "group/tools" = {
           "orientation" = "inherit";
           "drawer" = {
@@ -276,7 +273,6 @@
           "disk"
           "cpu"
           "memory"
-          "hyprland/language"
           "group/tools"
           "tray"
           "custom/notification"
@@ -540,14 +536,14 @@ window#waybar.empty #window {
     color: #ffffff;
 }
 
-#disk,#memory,#cpu,#language {
+#cpu,#memory,#disk {
     margin: 0px;
     padding: 0px;
     font-size: 16px;
     color: #ffffff;
 }
 
-#language {
+#disk {
     margin-right:10px;
 }
 
