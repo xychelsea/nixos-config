@@ -115,7 +115,6 @@ in
       rofi
       rustup
       sassc
-      signal-desktop-bin
       wget
       wlogout
     ];
