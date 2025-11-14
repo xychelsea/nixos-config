@@ -216,11 +216,12 @@ in
     };
   };
   nixpkgs = {
-    hostPlatform = "x86_64-linux";
-    overlays = [ (import "${homeManager}/overlay.nix") ];
     config = {
       allowUnfree = false;
     };
+    channel = "nixpkgs-unstable";
+    hostPlatform = "x86_64-linux";
+    overlays = [ (import "${homeManager}/overlay.nix") ];
   };
   programs = {
     hyprland = {
