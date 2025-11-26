@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   homeManager = builtins.fetchTarball {
-    url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
+    url = "https://github.com/nix-community/home-manager/archive/master.tar.gz";
   };
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
