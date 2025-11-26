@@ -167,7 +167,7 @@ in
       nerd-fonts.liberation
       nerd-fonts.noto
       nerd-fonts.roboto-mono
-      vistafonts
+      vista-fonts
     ];
   };
   hardware = {
