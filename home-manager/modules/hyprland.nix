@@ -39,9 +39,6 @@
         };
         sensitivity = 0;
       };
-      gestures = {
-        workspace_swipe = true;
-      };
       binds = {
         workspace_back_and_forth = true;
         allow_workspace_cycles = true;
