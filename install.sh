@@ -19,8 +19,8 @@ NIXOS_SCRIPTS_DIR=${NIXOS_DIR}/scripts
 NIXOS_GTK_THEMES_DIR=${NIXOS_DIR}/themes
 NIXOS_GRUB_THEME_DIR=${NIXOS_DIR}/grub-theme
 
-NIXOS_CHANNEL_URL=https://nixos.org/channels/nixos-25.05
-NIXOS_HM_CHANNEL_URL=https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz
+NIXOS_CHANNEL_URL=https://nixos.org/channels/nixos-25.11
+NIXOS_HM_CHANNEL_URL=https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz
 
 NIXOS_CRYPT_NAME=nixos
 NIXOS_CRYPT_PART=/dev/mapper/${NIXOS_CRYPT_NAME}
@@ -34,14 +34,12 @@ fi
 declare -A SUBVOL_TO_MOUNTPOINT=(
   ["@"]="/"
   ["@nix"]="/nix"
-  ["@home"]="/home"
   ["@persist"]="/persist"
 )
 
 declare -A SUBVOL_OPTS=(
   ["@"]="${NIXOS_PART_OPTS}"
   ["@nix"]="${NIXOS_PART_OPTS}"
-  ["@home"]="${NIXOS_PART_OPTS}"
   ["@persist"]="${NIXOS_PART_OPTS}"
 )
 
@@ -49,11 +47,10 @@ declare -A FS_DEV=(
   ["/boot/efi"]="/dev/disk/by-label/EFI"
   ["/"]="/dev/disk/by-label/nixos"
   ["/nix"]="/dev/disk/by-label/nixos"
-  ["/home"]="/dev/disk/by-label/nixos"
   ["/persist"]="/dev/disk/by-label/nixos"
 )
 
-SUBVOL_ORDER=( "@" "@nix" "@home" "@persist" )
+SUBVOL_ORDER=( "@" "@nix" "@persist" )
 
 RED=$'\e[31m'; GRN=$'\e[32m'; BLU=$'\e[34m'; DIM=$'\e[2m'; RST=$'\e[0m'
 step(){ printf "\n${BLU}==>${RST} %s\n" "$*"; }
@@ -191,8 +188,8 @@ mount_subvolumes() {
 
   run "install -d ${NIXOS_ROOT_DIR}/persist/etc/cryptsetup-keys.d"
   run "install -d ${NIXOS_ROOT_DIR}/persist/home/${NIXOS_USER}/.config/home-manager"
-  run "install -d ${NIXOS_ROOT_DIR}/persist/var/lib/nixos"
   run "install -d ${NIXOS_ROOT_DIR}/persist/projects"
+  run "install -d ${NIXOS_ROOT_DIR}/persist/var/lib/nixos"
 }
 
 partition_with_sfdisk() {
@@ -305,8 +302,8 @@ install_system() {
   run "nixos-install --root ${NIXOS_ROOT_DIR}"
 
   nixos-enter --root ${NIXOS_ROOT_DIR} -- sh -lc \
-    'nix-channel --add https://nixos.org/channels/nixos-25.05 nixos; \
-    nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager; \
+    'nix-channel --add https://nixos.org/channels/nixos-25.11 nixos; \
+    nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz home-manager; \
     nix-channel --update'
 }
 

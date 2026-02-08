@@ -34,6 +34,7 @@ in
         enableCryptodisk = true;
         efiSupport = true;
         fontSize = 36;
+        fsIdentifier = "provided";
         gfxmodeEfi = "auto";
         gfxpayloadEfi = "keep";
         theme = ./grub-theme;
@@ -64,14 +65,14 @@ in
       };
       directories = [
         "/etc/cryptsetup-keys.d"
-        "/etc/nixos"
         "/etc/NetworkManager/system-connections"
+        "/etc/nixos"
         "/etc/ssh"
         "/projects"
-        "/var/lib/nixos"
-        "/var/lib/systemd/coredump"
         "/var/lib/bluetooth"
         "/var/lib/docker"
+        "/var/lib/nixos"
+        "/var/lib/systemd/coredump"
       ];
       files = [
         "/etc/machine-id"
@@ -120,16 +121,29 @@ in
     ];
   };
   fileSystems = {
-    "/persist" = {
-      device = "/dev/disk/by-label/nixos";
+    "/" = {
+      device = "/dev/disk/by-label/EFI";
       fsType = "btrfs";
-      neededForBoot = true;
       options = [
         "subvol=@persist"
         "compress=zstd"
         "noatime"
-        "discard=async"
+        "discard=async" 
       ];
+    };
+    "/boot/efi" = {
+      device = "/dev/disk/by-label/EFI";
+      fsType = "vfat";
+      options = [
+        "fmask=0022"
+        "dmask=0022"
+      ];
+    };
+    "/home" = {
+      device = "none";
+      fsType = "tmpfs";
+      neededForBoot = true;
+      options = [ "defaults" ];
     };
     "/nix" = {
       device = "/dev/disk/by-label/nixos";
@@ -141,11 +155,12 @@ in
         "discard=async"
       ];
     };
-    "/home" = {
+    "/persist" = {
       device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
+      neededForBoot = true;
       options = [
-        "subvol=@home"
+        "subvol=@persist"
         "compress=zstd"
         "noatime"
         "discard=async"
@@ -284,6 +299,13 @@ in
   system = {
     stateVersion = "25.11";
   };
+  systemd = {
+    tmpfiles = {
+      rules = [
+        "z / 0755 root root - -"
+      ];
+    };
+  };
   time = {
     timeZone = "America/New_York";
   };
@@ -297,6 +319,7 @@ in
       ];
       group = "users";
       initialPassword = "not-a-real-hardcoded-password";
+      hashedPasswordFile = "/persist/secrets/xychelsea.passwd";
       isNormalUser = true;
       packages = with pkgs; [
       ];
