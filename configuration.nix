@@ -122,7 +122,7 @@ in
   };
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-label/EFI";
+      device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
       options = [
         "subvol=@persist"
@@ -318,7 +318,6 @@ in
         "docker"
       ];
       group = "users";
-      initialPassword = "not-a-real-hardcoded-password";
       hashedPasswordFile = "/persist/secrets/xychelsea.passwd";
       isNormalUser = true;
       packages = with pkgs; [
