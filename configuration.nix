@@ -125,7 +125,7 @@ in
       device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
       options = [
-        "subvol=@persist"
+        "subvol=@"
         "compress=zstd"
         "noatime"
         "discard=async" 
