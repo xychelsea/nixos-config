@@ -51,6 +51,7 @@ in
       users.xychelsea = {
         directories = [
           ".config"
+          ".gitconfig"
           ".local"
           ".ssh"
           ".themes"
@@ -266,8 +267,9 @@ in
       defaultSession = "hyprland-uwsm";
       sddm = {
         enable = true;
+        extraPackages = [ pkgs.catppuccin-sddm ];
         package = pkgs.kdePackages.sddm;
-        theme = "catppuccin-mocha";
+        theme = "catppuccin-mocha-mauve";
         wayland = {
           enable = true;
         };
