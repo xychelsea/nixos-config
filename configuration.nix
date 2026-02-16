@@ -51,7 +51,6 @@ in
       users.xychelsea = {
         directories = [
           ".config"
-          ".gitconfig"
           ".local"
           ".ssh"
           ".themes"
@@ -62,6 +61,7 @@ in
         files = [
           ".bash_history"
           ".zsh_history"
+          ".gitconfig"
         ];
       };
       directories = [
