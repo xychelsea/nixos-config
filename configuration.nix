@@ -311,7 +311,7 @@ in
   };
   users.users = {
     xychelsea = {
-      description = "Primary user account";
+      description = "Chelsea E. Manning";
       extraGroups = [
         "networkmanager"
         "wheel"
