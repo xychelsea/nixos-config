@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
-  programs.bash = {
-    bashrcExtra = ''
+  programs.zsh = {
+    initExtra = ''
 if [[ $(tty) == *"pts"* ]]; then
   fastfetch
 else
@@ -18,9 +18,11 @@ eval "$(starship init bash)"
     '';
     enable = true;
     enableCompletion = true;
-    historyFile = "/dev/null";
-    historyFileSize = 0;
-    historyIgnore = [];
+    history = {
+      path = "/dev/null";
+      save = 0;
+      size = 100;
+    };
     shellAliases = {
       ls = "eza -a --icons=always";
       ll = "eza -al --icons=always";

@@ -56,11 +56,8 @@ in
           ".themes"
           "Documents"
           "Downloads"
-          "Projects"
         ];
         files = [
-          ".bash_history"
-          ".zsh_history"
           ".gitconfig"
         ];
       };
