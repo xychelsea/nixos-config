@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   programs.zsh = {
-    initExtra = ''
+    initContent = ''
 if [[ $(tty) == *"pts"* ]]; then
   fastfetch
 else
