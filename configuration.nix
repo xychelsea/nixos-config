@@ -60,8 +60,6 @@ in
           "Projects"
         ];
         files = [
-          ".bash_history"
-          ".zsh_history"
         ];
       };
       directories = [
