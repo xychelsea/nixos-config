@@ -51,14 +51,17 @@ in
       users.xychelsea = {
         directories = [
           ".config"
+          ".cursor"
           ".local"
           ".ssh"
           ".themes"
           "Documents"
           "Downloads"
+          "Projects"
         ];
         files = [
-          ".gitconfig"
+          ".bash_history"
+          ".zsh_history"
         ];
       };
       directories = [

@@ -4,6 +4,7 @@
     ./modules/bash.nix
     ./modules/cursor.nix
     ./modules/fastfetch.nix
+    ./modules/git.nix
     ./modules/hyprland.nix
     ./modules/hyprlock.nix
     ./modules/hyprpaper.nix
@@ -14,33 +15,20 @@
     ./modules/waybar.nix
     ./modules/wlogout.nix
     ./modules/xdg.nix
+    ./modules/zsh.nix
   ];
-  home = {
-    username = "xychelsea";
-    homeDirectory = "/home/xychelsea";
-    stateVersion = "25.05";
-    packages = [ ];
-    file = { };
-    pointerCursor = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
-      size = 24;
-      gtk.enable = true;
-      x11.enable = true;
-    };
-    sessionVariables = {
-      ELECTRON_OZONE_PLATFORM_HINT = "wayland";
-      EDITOR = "nvim";
-      XCURSOR_SIZE = "24";
-      XCURSOR_THEME = "Bibata-Modern-Ice";
+
+  dconf.settings."org/gnome/desktop/interface" = {
+    color-scheme = "prefer-dark";
+    gtk-theme = "Catppuccin";
+  };
+  fonts = {
+    fontconfig = {
+      enable = true;
     };
   };
-  fonts.fontconfig.enable = true;
   gtk = {
     enable = true;
-    theme = {
-      name = "Catppuccin";
-    };
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
@@ -51,10 +39,33 @@
     gtk4.extraConfig = {
       "gtk-application-prefer-dark-theme" = true;
     };
+    theme = {
+      name = "Catppuccin";
+    };
   };
-  dconf.settings."org/gnome/desktop/interface" = {
-    color-scheme = "prefer-dark";
-    gtk-theme = "Catppuccin";
+  home = {
+    homeDirectory = "/home/xychelsea";
+    file = { };
+    packages = [ ];
+    pointerCursor = {
+      gtk = {
+        enable = true;
+      };
+      name = "Bibata-Modern-Ice";
+      package = pkgs.bibata-cursors;
+      size = 24;
+      x11 = {
+        enable = true;
+      };
+    };
+    sessionVariables = {
+      EDITOR = "nvim";
+      ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+      XCURSOR_SIZE = "24";
+      XCURSOR_THEME = "Bibata-Modern-Ice";
+    };
+    stateVersion = "25.11";
+    username = "xychelsea";
   };
 }
 
