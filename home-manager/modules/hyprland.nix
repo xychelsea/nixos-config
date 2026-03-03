@@ -81,9 +81,9 @@
           "$mainMod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
         ]) 10);
       general = {
-        gaps_in = 10;
-        gaps_out = 14;
-        border_size = 3;
+        gaps_in = 4;
+        gaps_out = 8;
+        border_size = 2;
         "col.active_border" = "rgba(f5c2e7ff)";
         "col.inactive_border" = "rgba(6c7086ff)";
         layout = "dwindle";
