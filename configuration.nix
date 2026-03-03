@@ -175,6 +175,8 @@ in
       corefonts
       font-awesome
       nerd-fonts.bitstream-vera-sans-mono
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
       nerd-fonts.dejavu-sans-mono
       nerd-fonts.fira-code
       nerd-fonts.fira-mono
