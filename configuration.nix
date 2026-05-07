@@ -9,13 +9,6 @@ in
 {
   boot = {
     initrd = {
-      luks.devices.nixos = {
-        allowDiscards = true;
-        keyFile = "/cryptroot.key";
-      };
-      secrets = {
-        "/cryptroot.key" = "/persist/etc/cryptsetup-keys.d/cryptroot.key";
-      };
     };
     kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [
@@ -31,7 +24,7 @@ in
       grub = {
         devices = [ "nodev" ];
         enable = true;
-        enableCryptodisk = true;
+        enableCryptodisk = false;
         efiSupport = true;
         fontSize = 36;
         fsIdentifier = "provided";
@@ -42,7 +35,12 @@ in
     };
     supportedFilesystems = [
       "btrfs"
+      "zfs"
     ];
+    zfs = {
+      extraPools = [ "tank" ];
+      forceImportRoot = false;
+    };
   };
   console = {
     enable = true;
@@ -53,10 +51,8 @@ in
       users.xychelsea = {
         directories = [
           ".config"
-          ".cursor"
           ".local"
           ".ssh"
-          ".themes"
           "Documents"
           "Downloads"
           "Projects"
@@ -65,7 +61,6 @@ in
         ];
       };
       directories = [
-        "/etc/cryptsetup-keys.d"
         "/etc/NetworkManager/system-connections"
         "/etc/nixos"
         "/etc/ssh"
@@ -84,9 +79,6 @@ in
       WLR_NO_HARDWARE_CURSORS = "1";
     };
     systemPackages = with pkgs; [
-      adwaita-qt
-      brave
-      catppuccin-sddm
       curl
       clang
       docker
@@ -95,31 +87,14 @@ in
       gcc
       git
       glib
-      gnome-shell
-      gnome-themes-extra
-      gtk-engine-murrine
       home-manager
-      hyprcursor
-      hypridle
-      hyprlock
-      hyprpaper
-      hyprpicker
-      hyprpolkitagent
       jq
       kitty.terminfo
       llvm
-      mullvad
-      mullvad-vpn
       neovim
-      papirus-icon-theme
-      pavucontrol
-      pyprland
       python3
-      rofi
       rustup
-      sassc
       wget
-      wlogout
     ];
   };
   fileSystems = {
@@ -170,24 +145,6 @@ in
     };
   };
   fonts = {
-    enableGhostscriptFonts = true;
-    fontDir = {
-      enable = true;
-    };
-    packages = with pkgs; [
-      corefonts
-      font-awesome
-      nerd-fonts.bitstream-vera-sans-mono
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
-      nerd-fonts.dejavu-sans-mono
-      nerd-fonts.fira-code
-      nerd-fonts.fira-mono
-      nerd-fonts.liberation
-      nerd-fonts.noto
-      nerd-fonts.roboto-mono
-      vista-fonts
-    ];
   };
   hardware = {
   };
@@ -218,9 +175,22 @@ in
     (import "${impermanence}/nixos.nix")
   ];
   networking = {
-    hostName = "default";
+    firewall = {
+      allowedTCPPorts = [ 36122 ];
+    };
+    hostName = "cloudbox";
+    hostId = "1a2b3c4d";
+    interfaces = {
+      enp5s0 = {
+        useDHCP = true;
+      };
+    };
     networkmanager = {
       enable = true;
+    };
+    useDHCP = false;
+    wireless = {
+      enable = false;
     };
   };
   nix = {
@@ -242,13 +212,6 @@ in
     overlays = [ (import "${homeManager}/overlay.nix") ];
   };
   programs = {
-    hyprland = {
-      enable = true;
-      withUWSM = true;
-    };
-    dconf = {
-      enable = true;
-    };
   };
   security = {
     rtkit = {
@@ -266,38 +229,10 @@ in
         fileSystems = [ "/persist" ];
       };
     };
-    displayManager = {
-      defaultSession = "hyprland-uwsm";
-      sddm = {
-        enable = true;
-        extraPackages = [ pkgs.catppuccin-sddm ];
-        package = pkgs.kdePackages.sddm;
-        theme = "catppuccin-mocha-mauve";
-        wayland = {
-          enable = true;
-        };
-      };
-    };
     fstrim = {
       enable = true;
     };
-    mullvad-vpn = {
-      enable = true;
-    };
-    pipewire = {
-      alsa = {
-        enable = true;
-        support32Bit = true;
-      };
-      enable = true;
-      pulse = {
-        enable = true;
-      };
-    };
-    pulseaudio = {
-      enable = false;
-    };
-    xserver = {
+    openssh = {
       enable = true;
     };
   };
