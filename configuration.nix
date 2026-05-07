@@ -55,7 +55,6 @@ in
           ".ssh"
           "Documents"
           "Downloads"
-          "Projects"
         ];
         files = [
         ];
