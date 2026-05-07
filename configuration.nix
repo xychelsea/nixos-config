@@ -59,7 +59,6 @@ in
           ".themes"
           "Documents"
           "Downloads"
-          "Projects"
         ];
         files = [
         ];
