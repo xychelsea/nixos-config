@@ -10,7 +10,7 @@ in
   boot = {
     initrd = {
     };
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_6_12;
     kernelParams = [
     ];
     loader = {
