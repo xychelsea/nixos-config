@@ -233,6 +233,11 @@ in
     };
     openssh = {
       enable = true;
+      ports = [ 36122 ];
+      settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = "no";
+      };
     };
   };
   system = {
