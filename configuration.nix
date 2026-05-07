@@ -40,7 +40,9 @@ in
         theme = ./grub-theme;
       };
     };
-    supportedFilesystems = [ "btrfs" ];
+    supportedFilesystems = [
+      "btrfs"
+    ];
   };
   console = {
     enable = true;
@@ -96,7 +98,6 @@ in
       gnome-shell
       gnome-themes-extra
       gtk-engine-murrine
-      jq
       home-manager
       hyprcursor
       hypridle
@@ -104,6 +105,8 @@ in
       hyprpaper
       hyprpicker
       hyprpolkitagent
+      jq
+      kitty.terminfo
       llvm
       mullvad
       mullvad-vpn
