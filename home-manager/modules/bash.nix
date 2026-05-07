@@ -2,6 +2,10 @@
 {
   programs.bash = {
     bashrcExtra = ''
+case $- in
+  *i*) ;;
+  *) return;;
+esac
 if [[ $(tty) == *"pts"* ]]; then
   fastfetch
 else
