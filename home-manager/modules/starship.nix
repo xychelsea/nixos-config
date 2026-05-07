@@ -8,7 +8,7 @@
 
     settings = {
       format = ''
-        [╭─](text)[](overlay1)$os$username[](bg:overlay0 fg:overlay1)$directory[](fg:overlay0 bg:surface1)$git_branch$git_status[](fg:surface1 bg:surface0)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:surface0 bg:mantle)$docker_context$conda[](fg:mantle bg:crust)$time[](fg:crust)$line_break$character
+        [╭─](text)[](overlay1)$os$username$hostname[](bg:overlay0 fg:overlay1)$directory[](fg:overlay0 bg:surface1)$git_branch$git_status[](fg:surface1 bg:surface0)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:surface0 bg:mantle)$docker_context$conda[](fg:mantle bg:crust)$time[](fg:crust)$line_break$character
       '';
       palette = "catppuccin_mocha";
       palettes = {
@@ -156,6 +156,10 @@
           Ubuntu = "󰕈";
           Windows = "󰍲";
         };
+      };
+      hostname = {
+        ssh_only = true;
+        format = "@[$hostname](bg:overlay1 fg:text)";
       };
       username = {
         show_always = true;
