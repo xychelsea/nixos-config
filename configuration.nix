@@ -117,6 +117,7 @@ in
       rofi
       rustup
       sassc
+      vlc
       wget
       wlogout
     ];
