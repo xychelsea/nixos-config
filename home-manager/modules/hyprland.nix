@@ -56,7 +56,7 @@
       bind = [
         "$mainMod, RETURN, exec, kitty"
         "$mainMod, A, exec, cursor"
-        "$mainMod, B, exec, brave"
+        "$mainMod, B, exec, brave --password-store=basic"
         "$mainMod, D, exec, signal-desktop"
         "$mainMod, S, exec, spotify"
         "$mainMod, Q, killactive"
