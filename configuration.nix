@@ -92,6 +92,7 @@ in
       llvm
       neovim
       python3
+      screen
       rustup
       wget
     ];
