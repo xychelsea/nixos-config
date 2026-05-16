@@ -58,7 +58,9 @@
         "$mainMod, A, exec, cursor"
         "$mainMod, B, exec, brave --password-store=basic"
         "$mainMod, D, exec, signal-desktop"
+        "$mainMod, E, exec, slack"
         "$mainMod, S, exec, spotify"
+        "$mainMod, V, exec, vlc"
         "$mainMod, Q, killactive"
         "$mainMod, F, fullscreen"
         "$mainMod, T, togglefloating"
@@ -114,7 +116,10 @@
         "waybar"
         "hyprpaper"
       ];
-      monitor = "eDP-1,2880x1920@120,0x0,1.5";
+      monitor = [
+        "DP-1,2560x1440@144.01Hz,0x0,1"
+        "DP-2,2560x1440@144.01Hz,2560x0,1"
+      ];
     };
     systemd = {
       enable = true;

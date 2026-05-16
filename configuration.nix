@@ -17,7 +17,7 @@ in
         "/cryptroot.key" = "/persist/etc/cryptsetup-keys.d/cryptroot.key";
       };
     };
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_6_12;
     kernelParams = [
     ];
     loader = {
@@ -57,6 +57,7 @@ in
           ".local"
           ".ssh"
           ".themes"
+          ".zoom"
           "Documents"
           "Downloads"
         ];
@@ -65,6 +66,7 @@ in
       };
       directories = [
         "/etc/cryptsetup-keys.d"
+        "/etc/mullvad-vpn"
         "/etc/NetworkManager/system-connections"
         "/etc/nixos"
         "/etc/ssh"
@@ -86,6 +88,7 @@ in
       adwaita-qt
       brave
       catppuccin-sddm
+      codeberg-cli
       curl
       clang
       docker
@@ -110,6 +113,8 @@ in
       mullvad
       mullvad-vpn
       neovim
+      nvidia-container-toolkit
+      openrct2
       papirus-icon-theme
       pavucontrol
       pyprland
@@ -117,9 +122,12 @@ in
       rofi
       rustup
       sassc
+      slack
+      spotify
       vlc
       wget
       wlogout
+      zoom-us
     ];
   };
   fileSystems = {
@@ -190,6 +198,23 @@ in
     ];
   };
   hardware = {
+    graphics = {
+      enable = true;
+    };
+    nvidia = {
+      modesetting = {
+        enable = true;
+      };
+      nvidiaSettings = true;
+      open = false;
+      powerManagement = {
+        enable = false;
+        finegrained = false;
+      };
+    };
+    nvidia-container-toolkit = {
+      enable = true;
+    };
   };
   home-manager = {
     useGlobalPkgs = true;
@@ -218,7 +243,12 @@ in
     (import "${impermanence}/nixos.nix")
   ];
   networking = {
-    hostName = "default";
+    hostName = "slimbox";
+    interfaces = {
+      enp5s0 = {
+        useDHCP = true;
+      };
+    };
     networkmanager = {
       enable = true;
     };
@@ -236,7 +266,7 @@ in
   };
   nixpkgs = {
     config = {
-      allowUnfree = false;
+      allowUnfree = true;
     };
     hostPlatform = "x86_64-linux";
     overlays = [ (import "${homeManager}/overlay.nix") ];
@@ -299,6 +329,7 @@ in
     };
     xserver = {
       enable = true;
+      videoDrivers = ["nvidia"];
     };
   };
   system = {
@@ -340,6 +371,15 @@ in
           size = 24;
         }
       ];
+      default-runtime = "nvidia";
+      features = {
+        cdi = true;
+      };
+      runtimes = {
+        nvidia = {
+          path = "/persist/etc/nixos/scripts/nvidia-docker-runtime.sh";
+        };
+      };
     };
     enable = true;
     rootless.enable = true;
