@@ -28,7 +28,7 @@
       ];
       input = {
         kb_layout = "us";
-        kb_options = "";
+        kb_options = "altwin:swap_alt_win";
         numlock_by_default = true;
         mouse_refocus = false;
         follow_mouse = 1;
@@ -58,7 +58,9 @@
         "$mainMod, A, exec, cursor"
         "$mainMod, B, exec, brave --password-store=basic"
         "$mainMod, D, exec, signal-desktop"
+        "$mainMod, D, exec, slack"
         "$mainMod, S, exec, spotify"
+        "$mainMod, V, exec, vlc"
         "$mainMod, Q, killactive"
         "$mainMod, F, fullscreen"
         "$mainMod, T, togglefloating"
@@ -114,7 +116,10 @@
         "waybar"
         "hyprpaper"
       ];
-      monitor = "eDP-1,2880x1920@120,0x0,1.5";
+      monitor = [
+        "eDP-1,2880x1920@120,0x0,1.25"
+        "DP-2,2560x1440@144,2304x-1120,1,transform,1"
+      ];
     };
     systemd = {
       enable = true;
