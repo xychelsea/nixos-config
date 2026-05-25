@@ -14,7 +14,7 @@ else
   fi
 fi
 
-eval "$(starship init bash)"
+eval "$(starship init zsh)"
     '';
     enable = true;
     enableCompletion = true;
