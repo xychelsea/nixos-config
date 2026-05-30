@@ -6,16 +6,8 @@ case $- in
   *i*) ;;
   *) return;;
 esac
-if [[ $(tty) == *"pts"* ]]; then
+if [[ $(tty) == *"ttys"* ]]; then
   fastfetch
-else
-  echo
-  if [ -f /bin/qtile ]; then
-    echo "Start Qtile X11 with command Qtile"
-  fi
-  if [ -f /bin/hyprctl ]; then
-    echo "Start Hyprland with command Hyprland"
-  fi
 fi
 
 eval "$(starship init bash)"
