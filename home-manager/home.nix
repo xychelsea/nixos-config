@@ -64,7 +64,7 @@
       XCURSOR_SIZE = "24";
       XCURSOR_THEME = "Bibata-Modern-Ice";
     };
-    stateVersion = "25.11";
+    stateVersion = "26.05";
     username = "xychelsea";
   };
 }
