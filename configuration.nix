@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   homeManager = builtins.fetchTarball {
-    url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz";
+    url = "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz";
   };
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
@@ -333,7 +333,7 @@ in
     };
   };
   system = {
-    stateVersion = "25.11";
+    stateVersion = "26.05";
   };
   systemd = {
     tmpfiles = {
