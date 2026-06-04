@@ -92,8 +92,11 @@ hl.config({
 })
 
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("kitty"))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("cursor"))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("brave --password-store=basic"))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("signal-desktop"))
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("slack"))
+hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("spotify"))
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("vlc"))
 
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
