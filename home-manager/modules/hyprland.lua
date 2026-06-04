@@ -42,7 +42,7 @@ hl.monitor({
 hl.config({
   input = {
     kb_layout = "us",
-    kb_options = "",
+    kb_options = "altwin:swap_alt_win",
     numlock_by_default = true,
     mouse_refocus = false,
     follow_mouse = 1,
