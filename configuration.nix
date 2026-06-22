@@ -17,7 +17,7 @@ in
         "/cryptroot.key" = "/persist/etc/cryptsetup-keys.d/cryptroot.key";
       };
     };
-    kernelPackages = pkgs.linuxPackages_6_12;
+    kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [
     ];
     loader = {
@@ -94,8 +94,10 @@ in
       docker
       docker-compose
       eza
+      ffmpeg-full
       gcc
       git
+      glab
       glib
       gnome-shell
       gnome-themes-extra
