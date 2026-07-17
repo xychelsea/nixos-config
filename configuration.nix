@@ -36,7 +36,6 @@ in
       "can_raw"
       "mttcan"
     ];
-    #kernelPackages = pkgs.linuxPackages_6_12;
     kernelParams = [
       "console=ttyTCU0,115200n8"
       "console=tty0"
@@ -45,11 +44,11 @@ in
       "nvme.use_threaded_interrupts=1"
       "swiotlb=2048"
       "firmware_class.path=/etc/firmware"
-      # Enable this only after the basic system boots reliably.
+      # Remove after USB stability has been verified.
       "usbcore.autosuspend=-1"
-      # Enable this only after the basic system boots reliably.
+      # Remove after PCIe devices have been verified with ASPM enabled.
       "pcie_aspm=off"
-      # Enable this only after the basic system boots reliably.
+      # Remove before enabling NVIDIA graphics.
       "nomodeset"
     ];
     loader = {
@@ -57,7 +56,8 @@ in
         enable = true;
       };
       efi = {
-        canTouchEfiVariables = true;
+        # Enable this only after the basic system boots reliably.
+        canTouchEfiVariables = false;
         efiSysMountPoint = "/boot";
       };
     };
@@ -180,7 +180,7 @@ in
   hardware = {
     graphics = {
       # Enable this only after the basic system boots reliably.
-      enable = enable;
+      enable = false;
     };
     nvidia-jetpack = {
       carrierBoard = "devkit";
@@ -218,6 +218,7 @@ in
   };
   imports = [
     ./hardware-configuration.nix
+    ./vendor/jetpack-nixos/modules
     (import "${homeManager}/nixos")
     (import "${impermanence}/nixos.nix")
   ];
