@@ -156,6 +156,7 @@ in
     "/nix" = {
       device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
+      neededForBoot = true;
       options = [
         "subvol=@nix"
         "compress=zstd"
