@@ -8,29 +8,57 @@ let
 in
 {
   boot = {
+    consoleLogLevel = 7;
     initrd = {
+      availableKernelModules = [
+        "xhci_hcd"
+        "xhci_tegra"
+        "usb_storage"
+        "sd_mod"
+        "nvme"
+        "nvme_core"
+        "pcie_tegra194"
+        "phy_tegra194_p2u"
+        "ahci"
+      ];
+      kernelModules = [
+        "xhci_tegra"
+        "usb_storage"
+        "nvme"
+        "pcie_tegra194"
+        "ahci"
+      ];
     };
+    kernelModules = [
+      "lan743x"
+      "r8168"
+      "can"
+      "can_raw"
+      "mttcan"
+    ];
     kernelPackages = pkgs.linuxPackages_6_12;
     kernelParams = [
+      "console=ttyTCU0,115200n8"
+      "console=tty0"
+      "efi=runtime"
+      "pci=pcie_bus_perf"
+      "nvme.use_threaded_interrupts=1"
+      "swiotlb=2048"
+      "firmware_class.path=/etc/firmware"
+      # Enable this only after the basic system boots reliably.
+      "usbcore.autosuspend=-1"
+      # Enable this only after the basic system boots reliably.
+      "pcie_aspm=off"
+      # Enable this only after the basic system boots reliably.
+      "nomodeset"
     ];
     loader = {
+      systemd-boot = {
+        enable = true;
+      };
       efi = {
         canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot/efi";
-      };
-      generic-extlinux-compatible = {
-        enable = false;
-      };
-      grub = {
-        devices = [ "nodev" ];
-        enable = true;
-        enableCryptodisk = false;
-        efiSupport = true;
-        fontSize = 36;
-        fsIdentifier = "provided";
-        gfxmodeEfi = "auto";
-        gfxpayloadEfi = "keep";
-        theme = ./grub-theme;
+        efiSysMountPoint = "/boot";
       };
     };
     supportedFilesystems = [
@@ -78,10 +106,14 @@ in
       WLR_NO_HARDWARE_CURSORS = "1";
     };
     systemPackages = with pkgs; [
+      can-utils
       curl
       clang
+      dtc
       docker
       docker-compose
+      efibootmgr
+      ethtool
       eza
       gcc
       git
@@ -91,9 +123,13 @@ in
       kitty.terminfo
       llvm
       neovim
+      nvme-cli
+      pciutils
       python3
+      smartmontools
       screen
       rustup
+      usbutils
       wget
     ];
   };
@@ -108,7 +144,7 @@ in
         "discard=async" 
       ];
     };
-    "/boot/efi" = {
+    "/boot" = {
       device = "/dev/disk/by-label/EFI";
       fsType = "vfat";
       options = [
@@ -147,6 +183,22 @@ in
   fonts = {
   };
   hardware = {
+    graphics = {
+      # Enable this only after the basic system boots reliably.
+      enable = enable;
+    };
+    nvidia-jetpack = {
+      carrierBoard = "devkit";
+      console = {
+        enable = true;
+      };
+      enable = true;
+      majorVersion = "7";
+      som = "orin-nx";
+      super = true;
+      # Enable this only after the basic system boots reliably.
+      configureCuda = false;
+    };
   };
   home-manager = {
     useGlobalPkgs = true;
@@ -178,12 +230,9 @@ in
     firewall = {
       allowedTCPPorts = [ 36122 ];
     };
-    hostName = "cloudbox";
+    hostName = "mediabox";
     hostId = "1a2b3c4d";
     interfaces = {
-      enp5s0 = {
-        useDHCP = true;
-      };
     };
     networkmanager = {
       enable = true;
@@ -203,9 +252,9 @@ in
   };
   nixpkgs = {
     config = {
-      allowUnfree = false;
+      allowUnfree = true;
     };
-    hostPlatform = "x86_64-linux";
+    hostPlatform = lib.mkDefault "aarch64-linux";
     overlays = [ (import "${homeManager}/overlay.nix") ];
   };
   programs = {
