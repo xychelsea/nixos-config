@@ -36,7 +36,7 @@ in
       "can_raw"
       "mttcan"
     ];
-    kernelPackages = pkgs.linuxPackages_6_12;
+    #kernelPackages = pkgs.linuxPackages_6_12;
     kernelParams = [
       "console=ttyTCU0,115200n8"
       "console=tty0"
