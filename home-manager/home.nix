@@ -15,7 +15,7 @@
     sessionVariables = {
       EDITOR = "nvim";
     };
-    stateVersion = "25.11";
+    stateVersion = "26.05";
     username = "xychelsea";
   };
 }
