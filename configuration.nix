@@ -63,12 +63,7 @@ in
     };
     supportedFilesystems = [
       "btrfs"
-      "zfs"
     ];
-    zfs = {
-      extraPools = [ "tank" ];
-      forceImportRoot = false;
-    };
   };
   console = {
     enable = true;
