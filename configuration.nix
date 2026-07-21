@@ -325,7 +325,8 @@ in
       ];
     };
     enable = true;
-    rootless.enable = true;
+    # Enable this only after the basic system boots reliably.
+    rootless.enable = false;
   };
 }
 
