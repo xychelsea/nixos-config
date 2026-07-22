@@ -18,6 +18,8 @@ in
       };
     };
     kernelPackages = pkgs.linuxPackages_latest;
+    kernelModules = [
+    ];
     kernelParams = [
     ];
     loader = {
