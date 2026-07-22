@@ -303,6 +303,8 @@ in
         "networkmanager"
         "wheel"
         "docker"
+        "video"
+        "render"
       ];
       group = "users";
       hashedPasswordFile = "/persist/secrets/xychelsea.passwd";
