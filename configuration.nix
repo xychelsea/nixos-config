@@ -92,8 +92,8 @@ in
       llvm
       neovim
       python3
-      screen
       rustup
+      screen
       wget
     ];
   };
@@ -280,7 +280,9 @@ in
       ];
     };
     enable = true;
-    rootless.enable = true;
+    rootless = {
+      enable = true;
+    };
   };
 }
 
