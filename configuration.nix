@@ -18,6 +18,8 @@ in
       };
     };
     kernelPackages = pkgs.linuxPackages_latest;
+    kernelModules = [
+    ];
     kernelParams = [
     ];
     loader = {
@@ -385,7 +387,9 @@ in
       };
     };
     enable = true;
-    rootless.enable = true;
+    rootless = {
+      enable = true;
+    };
   };
 }
 
