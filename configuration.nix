@@ -18,6 +18,8 @@ in
       };
     };
     kernelPackages = pkgs.linuxPackages_latest;
+    kernelModules = [
+    ];
     kernelParams = [
     ];
     loader = {
@@ -156,6 +158,7 @@ in
     "/nix" = {
       device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
+      neededForBoot = true;
       options = [
         "subvol=@nix"
         "compress=zstd"
@@ -348,7 +351,9 @@ in
       ];
     };
     enable = true;
-    rootless.enable = true;
+    rootless = {
+      enable = true;
+    };
   };
 }
 
