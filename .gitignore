@@ -8,6 +8,3 @@ result-*
 # Ignore automatically generated direnv output
 .direnv
 
-# Ignore submodules for NVIDIA Jetson devices
-vendor/flake-compat
-vendor/jetpack-nixos
