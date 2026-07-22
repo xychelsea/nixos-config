@@ -207,7 +207,9 @@ in
       allowUnfree = false;
     };
     hostPlatform = "x86_64-linux";
-    overlays = [ (import "${homeManager}/overlay.nix") ];
+    overlays = [
+      (import "${homeManager}/overlay.nix")
+    ];
   };
   programs = {
   };
