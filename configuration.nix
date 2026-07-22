@@ -49,20 +49,13 @@ in
       "nvme.use_threaded_interrupts=1"
       "swiotlb=2048"
       "firmware_class.path=/etc/firmware"
-      # Remove after USB stability has been verified.
-      "usbcore.autosuspend=-1"
-      # Remove after PCIe devices have been verified with ASPM enabled.
-      "pcie_aspm=off"
-      # Remove before enabling NVIDIA graphics.
-      "nomodeset"
     ];
     loader = {
       systemd-boot = {
         enable = true;
       };
       efi = {
-        # Enable this only after the basic system boots reliably.
-        canTouchEfiVariables = false;
+        canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";
       };
     };
@@ -126,10 +119,11 @@ in
       nvme-cli
       pciutils
       python3
-      smartmontools
-      screen
       rustup
+      screen
+      smartmontools
       usbutils
+      tpm2-tools
       wget
     ];
   };
@@ -185,8 +179,7 @@ in
   };
   hardware = {
     graphics = {
-      # Enable this only after the basic system boots reliably.
-      enable = false;
+      enable = true;
     };
     nvidia-jetpack = {
       carrierBoard = "devkit";
@@ -197,8 +190,7 @@ in
       majorVersion = "7";
       som = "orin-nx";
       super = true;
-      # Enable this only after the basic system boots reliably.
-      configureCuda = false;
+      configureCuda = true;
     };
   };
   home-manager = {
@@ -332,8 +324,9 @@ in
       ];
     };
     enable = true;
-    # Enable this only after the basic system boots reliably.
-    rootless.enable = false;
+    rootless = {
+      enable = true;
+    };
   };
 }
 
