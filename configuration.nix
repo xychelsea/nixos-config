@@ -5,7 +5,11 @@ let
   };
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
-  jetpackOverlay = import ./vendor/jetpack-nixos/overlay.nix;
+  jetpack = (
+    import ./vendor/flake-compat {
+      src = ./vendor/jetpack-nixos;
+    }
+  ).outputs;
 in
 {
   boot = {
@@ -220,7 +224,7 @@ in
   };
   imports = [
     ./hardware-configuration.nix
-    (import ./vendor/jetpack-nixos/modules/default.nix jetpackOverlay)
+    jetpack.nixosModules.default
     (import "${homeManager}/nixos")
     (import "${impermanence}/nixos.nix")
   ];
@@ -254,7 +258,6 @@ in
     };
     hostPlatform = lib.mkDefault "aarch64-linux";
     overlays = [
-      jetpackOverlay
       (import "${homeManager}/overlay.nix")
     ];
   };
