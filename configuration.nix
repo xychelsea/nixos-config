@@ -343,7 +343,9 @@ in
       ];
     };
     enable = true;
-    rootless.enable = true;
+    rootless = {
+      enable = true;
+    };
   };
 }
 
