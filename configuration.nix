@@ -232,6 +232,9 @@ in
     hostName = "mediabox";
     hostId = "1a2b3c4d";
     interfaces = {
+      enp8p1s0 = {
+        useDHCP = true;
+      };
     };
     networkmanager = {
       enable = true;
