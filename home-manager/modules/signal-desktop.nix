@@ -7,7 +7,7 @@ let
     sha256 = "sha256-dWT3hG2uGhwpNgGHjwVmzci68upUVe5ktoeaPrNZ3q8=";
   };
   chosenCss = "catppuccin-mocha.css";
-  asarCli   = pkgs.nodePackages.asar;
+  asarCli   = pkgs.asar;
   signal-desktop-calfmoon = pkgs.signal-desktop.overrideAttrs (old: {
     nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ asarCli pkgs.gnused ];
     postInstall = (old.postInstall or "") + ''
