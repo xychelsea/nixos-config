@@ -1,6 +1,6 @@
 [submodule "vendor/jetpack-nixos"]
 	path = vendor/jetpack-nixos
-	url = git@github.com:anduril/jetson-nixos
+	url = git@github.com:anduril/jetpack-nixos
 [submodule "vendor/flake-compat"]
 	path = vendor/flake-compat
 	url = git@github.com:nixos/flake-compat

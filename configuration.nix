@@ -13,7 +13,7 @@ let
 in
 {
   boot = {
-    consoleLogLevel = 7;
+    consoleLogLevel = 4;
     initrd = {
       availableKernelModules = [
         "xhci_hcd"
@@ -24,31 +24,17 @@ in
         "nvme_core"
         "pcie_tegra194"
         "phy_tegra194_p2u"
-        "ahci"
       ];
       kernelModules = [
         "xhci_tegra"
         "usb_storage"
         "nvme"
         "pcie_tegra194"
-        "ahci"
       ];
     };
     kernelModules = [
-      "lan743x"
-      "r8168"
-      "can"
-      "can_raw"
-      "mttcan"
     ];
     kernelParams = [
-      "console=ttyTCU0,115200n8"
-      "console=tty0"
-      "efi=runtime"
-      "pci=pcie_bus_perf"
-      "nvme.use_threaded_interrupts=1"
-      "swiotlb=2048"
-      "firmware_class.path=/etc/firmware"
     ];
     loader = {
       systemd-boot = {
@@ -61,12 +47,7 @@ in
     };
     supportedFilesystems = [
       "btrfs"
-      "zfs"
     ];
-    zfs = {
-      extraPools = [ "tank" ];
-      forceImportRoot = false;
-    };
   };
   console = {
     enable = true;
@@ -104,7 +85,6 @@ in
       WLR_NO_HARDWARE_CURSORS = "1";
     };
     systemPackages = with pkgs; [
-      can-utils
       curl
       clang
       dtc
@@ -128,7 +108,6 @@ in
       screen
       smartmontools
       usbutils
-      tpm2-tools
       wget
     ];
   };
@@ -188,14 +167,10 @@ in
     };
     nvidia-jetpack = {
       carrierBoard = "devkit";
-      console = {
-        enable = true;
-      };
+      configureCuda = true;
       enable = true;
       majorVersion = "7";
-      som = "orin-nx";
-      super = true;
-      configureCuda = true;
+      som = "orin-agx";
     };
   };
   home-manager = {
@@ -229,12 +204,9 @@ in
     firewall = {
       allowedTCPPorts = [ 36122 ];
     };
-    hostName = "mediabox";
+    hostName = "llmbox";
     hostId = "1a2b3c4d";
     interfaces = {
-      enp8p1s0 = {
-        useDHCP = true;
-      };
     };
     networkmanager = {
       enable = true;
