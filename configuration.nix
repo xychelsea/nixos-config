@@ -188,6 +188,10 @@ in
     };
     nvidia-jetpack = {
       carrierBoard = "devkit";
+    };
+    nvidia-container-toolkit = {
+      enable = true;
+      configureCuda = true;
       console = {
         enable = true;
       };
@@ -195,7 +199,6 @@ in
       majorVersion = "7";
       som = "orin-nx";
       super = true;
-      configureCuda = true;
     };
   };
   home-manager = {
@@ -335,7 +338,7 @@ in
     };
     enable = true;
     rootless = {
-      enable = true;
+      enable = false;
     };
   };
 }
