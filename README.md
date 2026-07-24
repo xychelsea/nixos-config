@@ -184,6 +184,8 @@ sudo darwin-rebuild switch --show-trace
 
 Home Manager is applied through the nix-darwin module; a separate `home-manager switch` is unnecessary when using this layout.
 
+Home Manager on these configs is often pinned via `fetchTarball` to `release-26.05` in `configuration.nix` — prefer that pin over an stale channel.
+
 ---
 
 ## System information
