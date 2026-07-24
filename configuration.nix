@@ -165,6 +165,9 @@ in
     graphics = {
       enable = true;
     };
+    nvidia-container-toolkit = {
+      enable = true;
+    };
     nvidia-jetpack = {
       carrierBoard = "devkit";
       configureCuda = true;
@@ -307,7 +310,7 @@ in
     };
     enable = true;
     rootless = {
-      enable = true;
+      enable = false;
     };
   };
 }
