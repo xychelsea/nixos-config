@@ -13,7 +13,7 @@ let
 in
 {
   boot = {
-    consoleLogLevel = 7;
+    consoleLogLevel = 4;
     initrd = {
       availableKernelModules = [
         "xhci_hcd"
