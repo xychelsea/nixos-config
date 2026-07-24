@@ -8,9 +8,12 @@ let
 in
 {
   boot = {
+    consoleLogLevel = 4;
     initrd = {
     };
     kernelPackages = pkgs.linuxPackages_6_12;
+    kernelModules = [
+    ];
     kernelParams = [
     ];
     loader = {
