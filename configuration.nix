@@ -376,19 +376,11 @@ in
           size = 24;
         }
       ];
-      default-runtime = "nvidia";
-      features = {
-        cdi = true;
-      };
-      runtimes = {
-        nvidia = {
-          path = "/persist/etc/nixos/scripts/nvidia-docker-runtime.sh";
-        };
-      };
     };
     enable = true;
     rootless = {
       enable = true;
+      setSocketVariable = true;
     };
   };
 }
