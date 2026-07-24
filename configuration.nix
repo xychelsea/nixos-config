@@ -186,11 +186,11 @@ in
     graphics = {
       enable = true;
     };
-    nvidia-jetpack = {
-      carrierBoard = "devkit";
-    };
     nvidia-container-toolkit = {
       enable = true;
+    };
+    nvidia-jetpack = {
+      carrierBoard = "devkit";
       configureCuda = true;
       console = {
         enable = true;
