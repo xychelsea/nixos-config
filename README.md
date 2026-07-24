@@ -289,6 +289,7 @@ Home Manager on these configs is often pinned via `fetchTarball` to `release-26.
 - LUKS2 + Btrfs subvolumes
 - `linuxPackages_latest`
 
+
 ---
 
 ## Notes

@@ -8,6 +8,7 @@ let
 in
 {
   boot = {
+    consoleLogLevel = 4;
     initrd = {
       luks.devices.nixos = {
         allowDiscards = true;
