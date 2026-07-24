@@ -115,14 +115,6 @@ Layout on this branch (`jetson-agx-orin`) — includes `vendor/`:
 ├── README.md
 ├── vendor/                   # jetpack-nixos submodule
 ├── .gitmodules
-├── home-manager/
-│   ├── home.nix
-│   └── modules/               # Per-app Home Manager modules
-├── grub-theme/                # Custom GRUB theme
-├── themes/                    # Catppuccin GTK themes
-├── wallpapers/
-├── scripts/                   # logout.sh, power.sh, Rofi config
-└── icons/
 ```
 
 Jetson branches also include `vendor/` (jetpack-nixos submodule) and `.gitmodules`.  
