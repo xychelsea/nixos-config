@@ -1,429 +1,329 @@
 # NixOS Configuration
 
-A comprehensive NixOS system configuration repository featuring a modular setup with Btrfs subvolumes, LUKS encryption, Impermanence, and Hyprland window manager.
+Personal multi-machine NixOS and nix-darwin configurations. Each git branch maps to one device (or platform). The `main` branch is a shared base / pseudo-device template that other machines diverge from.
 
 **License:** MIT License  
-**Copyright:** © 2025 Chelsea E. Manning
+**Copyright:** © 2025–2026 Chelsea E. Manning
 
 ---
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Repository Structure](#repository-structure)
-- [Branches](#branches)
-- [Key Features](#key-features)
-- [Configuration Modules](#configuration-modules)
+- [This machine](#this-machine)
+- [Fleet / branches](#fleet--branches)
+- [Shared Linux patterns](#shared-linux-patterns)
+- [Repository structure](#repository-structure)
+- [Configuration modules](#configuration-modules)
 - [Installation](#installation)
 - [Usage](#usage)
-- [System Information](#system-information)
+- [System information](#system-information)
 - [Notes](#notes)
 
 ---
 
-## Introduction
+## This machine
 
-This repository contains a complete NixOS system configuration designed for personal use. It provides a reproducible, declarative system setup with modern features including:
+| Field | Value |
+|-------|-------|
+| **Branch** | `main` |
+| **Hostname** | `default` |
+| **Platform** | `x86_64-linux` |
+| **Role** | Base / pseudo-device template |
+| **Status** | Active (template) |
 
-- **Declarative Configuration**: Entire system defined in Nix expressions
-- **Modular Architecture**: Home Manager modules for easy customization
-- **Security**: Full disk encryption with LUKS2
-- **Modern Desktop**: Hyprland window manager with Wayland
-- **Ephemeral Root**: Impermanence for a clean system state
-- **Automated Installation**: Script-based setup process
+Notable configuration on this branch:
 
-**Target Audience**: This configuration is intended for personal use and may require modification for your specific hardware and preferences. The username `xychelsea` is hardcoded in several places and should be changed if adapting this configuration.
+- Shared foundation other device branches diverge from
+- Hyprland + UWSM / SDDM desktop stack as the default template
+- Docker with data-root under `/persist`
+- `nixpkgs.config.allowUnfree = false`
+- Hostname is intentionally `default` — device branches override this
 
----
-
-## Repository Structure
-
-```
-/persist/etc/nixos/
-├── configuration.nix          # Main NixOS system configuration
-├── hardware-configuration.nix # Hardware-specific settings (auto-generated)
-├── install.sh                 # Automated installation script
-├── LICENSE                    # MIT License
-│
-├── home-manager/              # Home Manager user configuration
-│   ├── home.nix               # Main Home Manager entry point
-│   └── modules/               # Modular application configurations
-│       ├── bash.nix           # Bash shell configuration
-│       ├── cursor.nix         # Cursor theme settings
-│       ├── fastfetch.nix      # System information tool
-│       ├── hyprland.nix       # Hyprland window manager
-│       ├── hyprlock.nix       # Screen lock configuration
-│       ├── hyprpaper.nix      # Wallpaper manager
-│       ├── kitty.nix          # Terminal emulator
-│       ├── neovim.nix         # Text editor
-│       ├── rofi.nix           # Application launcher
-│       ├── signal-desktop.nix # Signal messaging app
-│       ├── starship.nix       # Shell prompt
-│       ├── waybar.nix         # Status bar
-│       ├── wlogout.nix        # Logout menu
-│       └── xdg.nix            # XDG configuration
-│
-├── grub-theme/                # Custom GRUB bootloader theme
-│   ├── theme.txt              # GRUB theme configuration
-│   ├── background.png         # Boot screen background
-│   ├── logo.png               # Boot screen logo
-│   ├── font.pf2               # GRUB font
-│   └── icons/                 # OS detection icons
-│
-├── themes/                    # GTK themes
-│   ├── Catppuccin-Dark/       # Dark theme variant
-│   ├── Catppuccin-Light/      # Light theme variant
-│   └── [hdpi/xhdpi variants]  # High DPI variants
-│
-├── wallpapers/                # Desktop wallpapers
-│   ├── apple-black-4k.png
-│   ├── arch-black-4k.png
-│   ├── nix-black-4k.png
-│   └── ubuntu-black-4k.png
-│
-├── scripts/                   # Utility scripts
-│   ├── logout.sh              # Logout menu launcher
-│   ├── power.sh               # Power management
-│   └── config.rasi            # Rofi configuration
-│
-└── icons/                     # Custom icons
-    ├── hibernate.png
-    ├── lock.png
-    ├── logout.png
-    ├── reboot.png
-    ├── shutdown.png
-    └── suspend.png
-```
-
-### Key Files
-
-- **[configuration.nix](configuration.nix)**: Main system configuration defining boot, filesystems, services, packages, and system-wide settings
-- **[home-manager/home.nix](home-manager/home.nix)**: Home Manager entry point that imports all user configuration modules
-- **[install.sh](install.sh)**: Automated installation script that handles partitioning, encryption, filesystem setup, and system installation
-- **[home-manager/modules/](home-manager/modules/)**: Directory containing modular application configurations for easy customization
+Checkout path on Linux desktops that track this layout: `/persist/etc/nixos`.
 
 ---
 
-## Branches
+## Fleet / branches
 
-This repository maintains multiple branches for different hardware configurations:
+One branch per device. Checkout the branch that matches the machine, then rebuild.
 
-### `main`
-The base/default configuration branch. Contains the core system configuration that serves as the foundation for other branches.
+| Branch | Hostname | Platform | Role | Notes |
+|--------|----------|----------|------|-------|
+| `main` | `default` | `x86_64-linux` | Base / pseudo-device | Shared template; `allowUnfree = false` |
+| `silverbox` | `silverbox` | `x86_64-linux` | Desktop | Hyprland, Mullvad, Docker |
+| `slimbox` | `slimbox` | `x86_64-linux` | Desktop + NVIDIA | Proprietary NVIDIA + container toolkit |
+| `cloudbox` | `cloudbox` | `x86_64-linux` | Server | OpenSSH on port **36122** (key-only); kernel 6.12 |
+| `jetson-agx-orin` | `llmbox` | `aarch64-linux` | Jetson Orin AGX | jetpack-nixos + CUDA; SSH **36122** |
+| `reserver-industrial` | `mediabox` | `aarch64-linux` | Jetson Orin NX | `som = "orin-nx"`, `super = true`; SSH **36122** |
+| `reserver-industrial-16gb` | `mediabox` | `aarch64-linux` | Jetson Orin NX (16 GB) | Same hostname; small deltas vs `reserver-industrial` (e.g. rootless Docker, container toolkit) |
+| `raspi4` | `raspi4` | `aarch64-linux` | Raspberry Pi 4 | **Not successfully deployed; kept for future work** |
+| `greybox` | (darwin) | `aarch64-darwin` | macOS (nix-darwin) | Lives under `/etc/nix-darwin`; Aerospace + jankyborders |
 
-### `raspi4`
-Raspberry Pi 4 specific configuration. Includes ARM-specific settings, U-Boot configuration, and firmware directory adjustments for Raspberry Pi hardware.
-
-### `silverbox`
-Configuration tailored for the "silverbox" machine. Contains hardware-specific settings and may include device-specific packages or configurations.
-
-### `slimbox`
-Configuration for the "slimbox" machine. Similar to silverbox but customized for different hardware specifications.
-
-**Note**: All branches share a common base configuration from `main` but diverge for hardware-specific requirements. When switching branches, ensure you're using the appropriate configuration for your hardware.
+`main` is the foundation other branches diverge from for hardware- and role-specific needs. Do not rebuild a machine from the wrong branch.
 
 ---
 
-## Key Features
+## Shared Linux patterns
 
-### Filesystem: Btrfs with Subvolumes
+These apply to NixOS hosts (not `greybox`):
 
-The system uses Btrfs with multiple subvolumes for organization and snapshot capabilities:
+### Filesystem: Btrfs + tmpfs home
 
-- `@` - Root filesystem (ephemeral with Impermanence)
-- `@nix` - Nix store
-- `@home` - User home directories
-- `@persist` - Persistent data directory
+- `@` — root (ephemeral with Impermanence)
+- `@nix` — Nix store
+- `@persist` — persistent data
+- `/home` — **tmpfs** (not a Btrfs `@home` subvolume)
 
-All subvolumes use:
-- `compress=zstd` - Zstandard compression
-- `noatime` - Disable access time updates
-- `discard=async` - Async TRIM support
+Subvolume mount options typically include `compress=zstd`, `noatime`, and `discard=async`.
 
-### Disk Encryption: LUKS2
+### Disk encryption: LUKS2
 
-Full disk encryption using LUKS2 with:
-- Keyfile stored in `/persist/etc/cryptsetup-keys.d/`
-- Initrd keyfile support for automatic decryption
-- Discard support for SSD optimization
+Full-disk LUKS2 with a keyfile under `/persist/etc/cryptsetup-keys.d/` and initrd keyfile support for unlock after the first passphrase boot.
 
 ### Impermanence
 
-Ephemeral root filesystem that persists only specified directories and files:
-- System directories: `/etc/nixos`, `/etc/ssh`, `/etc/NetworkManager/system-connections`
-- User directories: `.config`, `.local`, `.ssh`, `Documents`, `Downloads`, `Projects`
-- System files: `/etc/machine-id`
+Ephemeral root; only listed paths survive under `/persist`. Common persists include:
 
-### Window Manager: Hyprland
+- System: `/etc/nixos`, `/etc/ssh`, `/etc/NetworkManager/system-connections`, `/etc/machine-id`, `/var/lib/docker`, `/projects`
+- User (`xychelsea`): `.config`, `.local`, `.ssh`, `Documents`, `Downloads` (exact lists vary by branch)
 
-Modern Wayland compositor with:
-- Hardware-accelerated rendering
-- Dynamic window tiling
-- Custom keybindings and workspace management
-- Integration with Waybar, Rofi, and other Wayland-native tools
+### Auth
 
-### Home Manager
+User `xychelsea` uses `hashedPasswordFile = "/persist/secrets/xychelsea.passwd"` (not a plaintext placeholder in `configuration.nix`).
 
-User configuration management with:
-- Modular structure for easy customization
-- Separate modules for each application
-- Consistent theming (Catppuccin)
-- XDG directory configuration
+### Docker
 
-### Automated Installation
+Docker is enabled on most NixOS branches with `data-root` on `/persist/var/lib/docker`. Rootless and NVIDIA toolkit settings differ by machine.
 
-The `install.sh` script automates:
-- Disk partitioning (GPT with EFI and LUKS partitions)
-- LUKS encryption setup
-- Btrfs filesystem and subvolume creation
-- System installation
-- Configuration staging
-- Keyfile generation and setup
+### Desktop stack (desktop branches)
+
+Hyprland, Waybar, Rofi, Kitty, SDDM, PipeWire, Mullvad — on `main`, `silverbox`, `slimbox`, and the inactive `raspi4` template. Server/Jetson branches use a minimal Home Manager shell setup instead.
 
 ---
 
-## Configuration Modules
+## Repository structure
 
-The Home Manager configuration is organized into modular files for maintainability:
+Layout on this branch (`main`):
+
+```
+/persist/etc/nixos/
+├── configuration.nix          # NixOS system configuration
+├── hardware-configuration.nix # Hardware-specific settings (machine-local; often gitignored)
+├── install.sh                 # Automated LUKS/Btrfs desktop install script
+├── LICENSE
+├── README.md
+├── home-manager/
+│   ├── home.nix
+│   └── modules/               # Per-app Home Manager modules
+├── grub-theme/                # Custom GRUB theme
+├── themes/                    # Catppuccin GTK themes
+├── wallpapers/
+├── scripts/                   # logout.sh, power.sh, Rofi config
+└── icons/
+```
+
+Jetson branches also include `vendor/` (jetpack-nixos submodule) and `.gitmodules`.  
+`greybox` is checked out at `/etc/nix-darwin` and does not use the LUKS/Btrfs layout above.
+
+### Key files
+
+- **[configuration.nix](configuration.nix)** — boot, filesystems, services, packages, networking
+- **[home-manager/home.nix](home-manager/home.nix)** — Home Manager entry point and module imports
+- **[install.sh](install.sh)** — partitioning, LUKS, Btrfs subvolumes, and NixOS install (desktop-oriented)
+
+---
+
+## Configuration modules
+
+Home Manager modules present in-tree (imports vary by branch):
 
 | Module | Description |
 |--------|-------------|
-| `bash.nix` | Bash shell configuration and settings |
-| `cursor.nix` | Cursor theme configuration (Bibata-Modern-Ice) |
-| `fastfetch.nix` | Fastfetch system information tool configuration |
-| `hyprland.nix` | Hyprland window manager settings, keybindings, and window rules |
-| `hyprlock.nix` | Screen lock configuration for Hyprland |
-| `hyprpaper.nix` | Wallpaper manager configuration |
-| `kitty.nix` | Kitty terminal emulator configuration |
-| `neovim.nix` | Neovim text editor configuration |
-| `rofi.nix` | Rofi application launcher and window switcher |
-| `signal-desktop.nix` | Signal Desktop messaging application |
-| `starship.nix` | Starship cross-shell prompt configuration |
-| `waybar.nix` | Waybar status bar with system monitoring, workspaces, and controls |
-| `wlogout.nix` | Wlogout logout/power menu configuration |
-| `xdg.nix` | XDG directory and MIME type configuration |
+| `bash.nix` | Bash shell |
+| `cursor.nix` | Cursor theme (desktop) |
+| `fastfetch.nix` | Fastfetch |
+| `git.nix` | Git |
+| `hyprland.nix` / `hyprland.lua` | Hyprland (desktop) |
+| `hyprlock.nix` | Screen lock (desktop) |
+| `hyprpaper.nix` | Wallpaper (desktop) |
+| `kitty.nix` | Kitty terminal |
+| `rofi.nix` | Launcher (desktop) |
+| `signal-desktop.nix` | Signal (desktop) |
+| `starship.nix` | Prompt |
+| `waybar.nix` | Status bar (desktop) |
+| `wlogout.nix` | Logout menu (desktop) |
+| `xdg.nix` | XDG dirs / MIME (desktop) |
+| `zsh.nix` | Zsh |
+| `aerospace.nix` | Aerospace WM (**Darwin / greybox**) |
+| `jankyborders.nix` | Window borders (**Darwin / greybox**) |
 
-Each module can be independently modified or disabled by commenting out the import in `home-manager/home.nix`.
+Desktop Linux branches may still carry `aerospace.nix` / `jankyborders.nix` on disk without importing them. Enable or disable modules via imports in `home-manager/home.nix`.
 
 ---
 
 ## Installation
 
-### Prerequisites
+### Desktop NixOS (`install.sh`)
 
-- NixOS installation media (live USB/CD)
-- Root access
-- `cryptsetup` installed on the live system
-- Basic understanding of disk partitioning and encryption
+Intended for LUKS + Btrfs machines (e.g. silverbox/slimbox-style installs).
 
-### ⚠️ Warning
+**Warning:** The script destroys data on the target disk.
 
-**The installation script will destroy all data on the target disk.** Ensure you have backups and are using the correct disk device.
+1. Boot NixOS installation media and clone this repo (checkout the correct device branch).
+2. Review `configuration.nix` and `install.sh`:
+   - `NIXOS_USER` (default `xychelsea`)
+   - `NIXOS_HOST` (script default is still `silverbox` — set to match the branch)
+   - Disk device (default `/dev/nvme0n1`)
+3. Run:
 
-### Installation Steps
+```bash
+sudo bash install.sh
+# or
+sudo bash install.sh --wipe
+```
 
-1. **Clone or copy this repository** to the live NixOS system
+4. Set the LUKS passphrase and user password when prompted, then reboot.
 
-2. **Review and modify** `configuration.nix` and `install.sh`:
-   - Update `NIXOS_USER` in `install.sh` (default: `xychelsea`)
-   - Update `NIXOS_HOST` in `install.sh` (default: `silverbox`)
-   - Adjust disk device in `install.sh` (default: `/dev/nvme0n1`)
-   - Review system packages and services in `configuration.nix`
+**Note:** `install.sh` still pins NixOS/Home Manager channel URLs to **25.11**, while active configs use **stateVersion / Home Manager 26.05**. Align channels with the target system before relying on a fresh install.
 
-3. **Run the installation script**:
-   ```bash
-   sudo bash install.sh
-   ```
+### Jetson branches
 
-   For a complete disk wipe (overwrites with random data):
-   ```bash
-   sudo bash install.sh --wipe
-   ```
+- Initialize the jetpack submodule (`vendor/jetpack-nixos`) before building.
+- Hostname may differ from the branch name (`llmbox`, `mediabox`).
+- Prefer the documented Jetson/jetpack install path for that hardware; do not assume `install.sh` matches every SOM carrier board.
 
-4. **Follow the prompts**:
-   - The script will handle partitioning, encryption, and installation
-   - You'll be prompted to set a password for the LUKS container
-   - You'll be prompted to set a user password
+### Headless / SSH hosts (`cloudbox`, Jetsons)
 
-5. **Reboot** and remove the installation media
+OpenSSH listens on **36122** with password authentication disabled. Ensure firewall and keys are in place before locking yourself out.
 
-### Installation Script Features
+### nix-darwin (`greybox`)
 
-The `install.sh` script:
-- Creates GPT partition table with EFI and LUKS partitions
-- Sets up LUKS2 encryption
-- Creates Btrfs filesystem with subvolumes
-- Generates hardware configuration
-- Stages all configuration files
-- Installs NixOS
-- Sets up initrd keyfile for automatic decryption
-- Configures UEFI boot entries
+Configuration lives at `/etc/nix-darwin`. Use `darwin-rebuild` (not `nixos-rebuild`). See the `greybox` branch README “This machine” section when on that branch.
+
+### Raspberry Pi (`raspi4`)
+
+Inactive / incomplete. Uses `linuxPackages_rpi4`, extlinux, `/boot/firmware`, and nixos-hardware Pi 4 bits. Not a supported production install yet.
 
 ---
 
 ## Usage
 
-### Switching Branches
+### Ad-hoc tools with `nix-shell -p`
 
-To use a different hardware configuration:
+When a CLI tool is not on the current PATH, wrap it:
 
 ```bash
-cd /persist/etc/nixos
-git checkout <branch-name>  # e.g., raspi4, silverbox, slimbox
-sudo nixos-rebuild switch
+nix-shell -p git --run 'git status'
+nix-shell -p git --run 'git checkout silverbox'
+nix-shell -p ripgrep --run 'rg hostName configuration.nix'
+nix-shell -p jq --run 'jq . some.json'
 ```
 
-### Rebuilding the System
-
-After making configuration changes:
+### Switching branches
 
 ```bash
-# Rebuild and switch to new configuration
+cd /persist/etc/nixos   # or /etc/nix-darwin on greybox
+nix-shell -p git --run 'git checkout <branch-name>'
+sudo nixos-rebuild switch   # NixOS hosts
+# darwin-rebuild switch     # greybox only
+```
+
+Only check out the branch that belongs to this hardware.
+
+### Rebuilding NixOS
+
+```bash
 sudo nixos-rebuild switch
-
-# Rebuild and test without switching
 sudo nixos-rebuild test
-
-# Rebuild and boot into new configuration on next reboot
 sudo nixos-rebuild boot
 ```
 
-### Rebuilding Home Manager
-
-For user configuration changes:
+Debug failures with:
 
 ```bash
-home-manager switch
+sudo nixos-rebuild switch --show-trace
 ```
 
-### Customizing Configuration
+### Home Manager
 
-1. **System-wide changes**: Edit `configuration.nix`
-2. **User configuration**: Edit `home-manager/home.nix` or individual modules
-3. **Application-specific**: Edit files in `home-manager/modules/`
-4. **Hardware-specific**: Edit `hardware-configuration.nix` (be careful, this is auto-generated)
-
-### Updating Channels
+Most hosts pull Home Manager through the system configuration (`home-manager` NixOS/darwin module). After editing modules:
 
 ```bash
-# Update NixOS channel
+sudo nixos-rebuild switch
+```
+
+Standalone `home-manager switch` is only needed if you use a separate HM channel workflow.
+
+### Updating channels
+
+```bash
 sudo nix-channel --update nixos
-
-# Update Home Manager channel
-nix-channel --update home-manager
-
-# Rebuild after channel updates
 sudo nixos-rebuild switch --upgrade
 ```
 
+Home Manager on these configs is often pinned via `fetchTarball` to `release-26.05` in `configuration.nix` — prefer that pin over an stale channel.
+
 ---
 
-## System Information
+## System information
 
-### NixOS Version
-- **State Version**: 25.05
-- **Channel**: nixos-25.05
+### Versions (this branch)
+
+- **NixOS / HM stateVersion:** 26.05
+- **Home Manager tarball:** `release-26.05`
+- **`install.sh` channel URLs:** still 25.11 (see Installation note)
 
 ### Architecture
-- **Primary**: x86_64-linux
-- **Raspberry Pi**: aarch64-linux (raspi4 branch)
 
-### Key Packages
+- This branch: `x86_64-linux` (template)
+- Fleet also includes `aarch64-linux` (Jetson, Pi) and `aarch64-darwin` (`greybox`)
 
-**System Tools:**
-- `git`, `curl`, `wget`, `jq`
-- `docker`, `docker-compose`
-- `clang`, `gcc`, `llvm`, `rustup`
-- `python3`
+### Services (this branch)
 
-**Desktop Environment:**
-- `hyprland` - Window manager
-- `waybar` - Status bar
-- `rofi` - Application launcher
-- `kitty` - Terminal emulator
-- `neovim` - Text editor
-- `hyprpaper` - Wallpaper manager
-- `hyprlock` - Screen lock
-- `wlogout` - Logout menu
+- NetworkManager, Mullvad VPN, PipeWire, SDDM, Docker, Btrfs scrub (as configured)
+- Free/libre-oriented defaults (`allowUnfree = false`)
 
-**Applications:**
-- `brave` - Web browser
-- `signal-desktop` - Messaging
-- `mullvad-vpn` - VPN client
+### Boot (this branch)
 
-**Theming:**
-- `catppuccin-sddm` - SDDM theme
-- `papirus-icon-theme` - Icon theme
-- Custom Catppuccin GTK themes
+- GRUB (EFI) with custom theme under `grub-theme/`
+- LUKS2 + Btrfs subvolumes
+- `linuxPackages_latest`
 
-### Services
-
-- **NetworkManager** - Network management
-- **Mullvad VPN** - VPN service
-- **PipeWire** - Audio system
-- **SDDM** - Display manager (Catppuccin theme)
-- **Docker** - Container runtime
-- **Btrfs auto-scrub** - Filesystem maintenance
-
-### Boot Configuration
-
-- **Bootloader**: GRUB with EFI support
-- **Encryption**: LUKS2 with keyfile support
-- **Theme**: Custom GRUB theme in `grub-theme/`
-- **Kernel**: Latest Linux kernel packages
 
 ---
 
 ## Notes
 
-### Personal Configuration
+### Personal configuration
 
-This is a **personal configuration repository** and is not intended for direct use without modification. Key considerations:
+Username `xychelsea` is hardcoded in `configuration.nix`, Home Manager, and `install.sh`. Adapt paths and user names before reusing this elsewhere.
 
-- **Username**: The configuration uses `xychelsea` as the default username. You'll need to update:
-  - `configuration.nix` - User definition
-  - `home-manager/home.nix` - Home directory paths
-  - `install.sh` - Installation script variables
+Regenerate hardware config on new machines:
 
-- **Hardware**: The `hardware-configuration.nix` is machine-specific and should be regenerated for your hardware:
-  ```bash
-  sudo nixos-generate-config
-  ```
+```bash
+sudo nixos-generate-config
+```
 
-- **Hostname**: Default hostname is `default` in `configuration.nix`. Update for your system.
+### Security
 
-- **Time Zone**: Set to `America/New_York` in `configuration.nix`. Adjust as needed.
-
-### Security Considerations
-
-- **LUKS Password**: Choose a strong password for disk encryption
-- **User Password**: The initial password in `configuration.nix` is a placeholder - change it immediately
-- **SSH Keys**: Add your SSH keys to `/persist/home/<user>/.ssh/` after installation
-- **Keyfile**: The LUKS keyfile is stored in `/persist/etc/cryptsetup-keys.d/` - ensure this directory has proper permissions
-
-### Customization Tips
-
-1. **Add packages**: Edit `environment.systemPackages` in `configuration.nix`
-2. **Modify themes**: Update GTK theme settings in `home-manager/home.nix`
-3. **Change keybindings**: Edit `home-manager/modules/hyprland.nix`
-4. **Adjust workspaces**: Modify workspace count in `hyprland.nix`
-5. **Add services**: Add to `services` section in `configuration.nix`
+- Use a strong LUKS passphrase on first unlock
+- Keep `/persist/secrets/xychelsea.passwd` and LUKS keyfiles permission-restricted
+- Place SSH keys under the persisted `.ssh` directory
+- On SSH hosts, confirm key-only auth on port 36122 before disabling other access
 
 ### Troubleshooting
 
-- **Boot issues**: Check GRUB configuration and UEFI settings
-- **Encryption problems**: Verify keyfile permissions and LUKS setup
-- **Home Manager errors**: Run `home-manager switch --show-trace` for detailed errors
-- **NixOS rebuild failures**: Use `sudo nixos-rebuild switch --show-trace` for debugging
+- Boot / encryption: GRUB, UEFI entries, keyfile path under `/persist/etc/cryptsetup-keys.d/`
+- Rebuild: `sudo nixos-rebuild switch --show-trace`
+- Missing CLIs in a minimal environment: `nix-shell -p <pkg> --run '…'`
 
-### Getting Help
+### References
 
 - [NixOS Manual](https://nixos.org/manual/nixos/)
 - [Home Manager Manual](https://nix-community.github.io/home-manager/)
 - [Hyprland Wiki](https://wiki.hyprland.org/)
-- [NixOS Discourse](https://discourse.nixos.org/)
+- [nix-darwin](https://github.com/nix-darwin/nix-darwin)
 
 ---
 
-**Last Updated**: 2025
-
+**Last Updated:** 2026
