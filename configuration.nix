@@ -134,14 +134,10 @@ in
   };
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-label/nixos";
-      fsType = "btrfs";
-      options = [
-        "subvol=@"
-        "compress=zstd"
-        "noatime"
-        "discard=async" 
-      ];
+      device = "none";
+      fsType = "tmpfs";
+      neededForBoot = true;
+      options = [ "defaults" ];
     };
     "/boot" = {
       device = "/dev/disk/by-label/EFI";
