@@ -5,7 +5,9 @@
     package = pkgs.fastfetch;
     settings = {
       logo = {
-        padding = { top = 2; };
+        padding = {
+          top = 2;
+        };
       };
       display = {
         separator = " ➜ ";
@@ -13,124 +15,125 @@
       modules = [
         "break"
         {
-          type = "title";
           keyWidth = 10;
+          type = "title";
         }
         "break"
         {
-          type = "os";
           key = "{icon} OS ";
           keyColor = "33";
+          type = "os";
         }
         {
-          type = "kernel";
           key = "│ ├ ";
           keyColor = "33";
+          type = "kernel";
         }
         {
-          type = "packages";
           key = "│ ├󰏖 ";
           keyColor = "33";
+          type = "packages";
         }
         {
-          type = "shell";
           key = "│ └ ";
           keyColor = "33";
+          type = "shell";
         }
-              {
-          type = "wm";
+        {
           key = " WM ";
           keyColor = "34";
+          type = "wm";
         }
         {
-          type = "lm";
           key = "│ ├󰧨 ";
           keyColor = "34";
+          type = "lm";
         }
         {
-          type = "wmtheme";
           key = "│ ├󰉼 ";
           keyColor = "34";
+          type = "wmtheme";
         }
-          {
-          type = "icons";
+        {
           key = "│ ├󰀻 ";
           keyColor = "34";
+          type = "icons";
         }
         {
-          type = "cursor";
           key = "│ ├ ";
           keyColor = "34";
+          type = "cursor";
         }
         {
-          type = "terminal";
           key = "│ ├ ";
           keyColor = "34";
+          type = "terminal";
         }
         {
-          type = "terminalfont";
           key = "│ ├ ";
           keyColor = "34";
+          type = "terminalfont";
         }
         {
-          type = "wallpaper";
           key = "│ └󰸉 ";
           keyColor = "34";
+          type = "wallpaper";
         }
         {
-          type = "host";
           key = "󰌢 PC ";
           keyColor = "32";
+          type = "host";
         }
         {
-          type = "cpu";
           key = "│ ├󰻠 ";
           keyColor = "32";
+          temp = true;
+          type = "cpu";
         }
         {
-          type = "gpu";
           key = "│ ├󰍛 ";
           keyColor = "32";
+          type = "gpu";
         }
-              {
-          type = "memory";
+        {
           key = "│ ├󰑭 ";
           keyColor = "32";
+          type = "memory";
         }
         {
-          type = "swap";
           key = "│ ├󰓡 ";
           keyColor = "32";
+          type = "swap";
         }
         {
-          type = "disk";
           key = "│ ├󰋊 ";
           keyColor = "32";
+          type = "disk";
         }
         {
-          type = "display";
           key = "│ ├󰍹 ";
           keyColor = "32";
+          type = "display";
         }
         {
-          type = "uptime";
           key = "│ └󰥔 ";
           keyColor = "32";
+          type = "uptime";
         }
         {
-          type = "sound";
           key = " SND";
           keyColor = "36";
-        }
-              {
-          type = "player";
-          key = "│ ├󰥠 ";
-          keyColor = "36";
+          type = "sound";
         }
         {
-          type = "media";
+          key = "│ ├󰥠 ";
+          keyColor = "36";
+          type = "player";
+        }
+        {
           key = "│ └󰝚 ";
           keyColor = "36";
+          type = "media";
         }
         "break"
         "break"
