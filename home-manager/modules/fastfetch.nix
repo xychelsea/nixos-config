@@ -93,6 +93,7 @@
         {
           key = "│ ├󰍛 ";
           keyColor = "32";
+          temp = true;
           type = "gpu";
         }
         {
