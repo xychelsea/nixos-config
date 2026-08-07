@@ -87,7 +87,7 @@
         {
           key = "│ ├󰻠 ";
           keyColor = "32";
-          temp = "true";
+          temp = true;
           type = "cpu";
         }
         {
