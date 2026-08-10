@@ -97,8 +97,10 @@ in
       docker
       docker-compose
       eza
+      ffmpeg-full
       gcc
       git
+      glab
       glib
       gnome-shell
       gnome-themes-extra
