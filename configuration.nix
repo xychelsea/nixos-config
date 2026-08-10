@@ -60,6 +60,7 @@ in
           ".local"
           ".ssh"
           ".themes"
+          ".zoom"
           "Documents"
           "Downloads"
         ];
@@ -68,6 +69,7 @@ in
       };
       directories = [
         "/etc/cryptsetup-keys.d"
+        "/etc/mullvad-vpn"
         "/etc/NetworkManager/system-connections"
         "/etc/nixos"
         "/etc/ssh"
@@ -89,6 +91,7 @@ in
       adwaita-qt
       brave
       catppuccin-sddm
+      codeberg-cli
       curl
       clang
       docker
@@ -120,9 +123,12 @@ in
       rofi
       rustup
       sassc
+      slack
+      spotify
       vlc
       wget
       wlogout
+      zoom-us
     ];
   };
   fileSystems = {
@@ -222,7 +228,7 @@ in
     (import "${impermanence}/nixos.nix")
   ];
   networking = {
-    hostName = "default";
+    hostName = "silverbox";
     networkmanager = {
       enable = true;
     };
@@ -240,7 +246,7 @@ in
   };
   nixpkgs = {
     config = {
-      allowUnfree = false;
+      allowUnfree = true;
     };
     hostPlatform = "x86_64-linux";
     overlays = [ (import "${homeManager}/overlay.nix") ];

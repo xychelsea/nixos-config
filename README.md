@@ -25,21 +25,20 @@ Personal multi-machine NixOS and nix-darwin configurations. Each git branch maps
 
 | Field | Value |
 |-------|-------|
-| **Branch** | `main` |
-| **Hostname** | `default` |
+| **Branch** | `silverbox` |
+| **Hostname** | `silverbox` |
 | **Platform** | `x86_64-linux` |
-| **Role** | Base / pseudo-device template |
-| **Status** | Active (template) |
+| **Role** | Desktop workstation |
+| **Status** | Active |
 
 Notable configuration on this branch:
 
-- Shared foundation other device branches diverge from
-- Hyprland + UWSM / SDDM desktop stack as the default template
-- Docker with data-root under `/persist`
-- `nixpkgs.config.allowUnfree = false`
-- Hostname is intentionally `default` — device branches override this
+- Hyprland + UWSM session via SDDM (Catppuccin)
+- Mullvad VPN, Docker (data-root under `/persist`), rootless Docker enabled
+- `nixpkgs.config.allowUnfree = true`
+- No proprietary NVIDIA stack (contrast with `slimbox`)
 
-Checkout path on Linux desktops that track this layout: `/persist/etc/nixos`.
+Checkout path on this host: `/persist/etc/nixos`.
 
 ---
 
@@ -103,7 +102,7 @@ Hyprland, Waybar, Rofi, Kitty, SDDM, PipeWire, Mullvad — on `main`, `silverbox
 
 ## Repository structure
 
-Layout on this branch (`main`):
+Layout on this branch (`silverbox`):
 
 ```
 /persist/etc/nixos/
@@ -275,15 +274,14 @@ Home Manager on these configs is often pinned via `fetchTarball` to `release-26.
 
 ### Architecture
 
-- This branch: `x86_64-linux` (template)
+- This machine: `x86_64-linux`
 - Fleet also includes `aarch64-linux` (Jetson, Pi) and `aarch64-darwin` (`greybox`)
 
-### Services (this branch)
+### Services (this machine)
 
 - NetworkManager, Mullvad VPN, PipeWire, SDDM, Docker, Btrfs scrub (as configured)
-- Free/libre-oriented defaults (`allowUnfree = false`)
 
-### Boot (this branch)
+### Boot (this machine)
 
 - GRUB (EFI) with custom theme under `grub-theme/`
 - LUKS2 + Btrfs subvolumes
