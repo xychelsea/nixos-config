@@ -25,18 +25,18 @@ Personal multi-machine NixOS and nix-darwin configurations. Each git branch maps
 
 | Field | Value |
 |-------|-------|
-| **Branch** | `silverbox` |
-| **Hostname** | `silverbox` |
+| **Branch** | `gamebox` |
+| **Hostname** | `gamebox` |
 | **Platform** | `x86_64-linux` |
-| **Role** | Desktop workstation |
+| **Role** | Gaming Laptop |
 | **Status** | Active |
 
 Notable configuration on this branch:
 
 - Hyprland + UWSM session via SDDM (Catppuccin)
+- NVIDIA Container Toolkit for GPU-backed Docker workloads
 - Mullvad VPN, Docker (data-root under `/persist`), rootless Docker enabled
-- `nixpkgs.config.allowUnfree = true`
-- No proprietary NVIDIA stack (contrast with `slimbox`)
+- `nixpkgs.config.allowUnfree = true` (NVIDIA and proprietary apps)
 
 Checkout path on this host: `/persist/etc/nixos`.
 
@@ -102,7 +102,7 @@ Hyprland, Waybar, Rofi, Kitty, SDDM, PipeWire, Mullvad — on `main`, `silverbox
 
 ## Repository structure
 
-Layout on this branch (`silverbox`):
+Layout on this branch (`gamebox`):
 
 ```
 /persist/etc/nixos/
@@ -280,6 +280,7 @@ Home Manager on these configs is often pinned via `fetchTarball` to `release-26.
 ### Services (this machine)
 
 - NetworkManager, Mullvad VPN, PipeWire, SDDM, Docker, Btrfs scrub (as configured)
+- NVIDIA driver stack + nvidia-container-toolkit
 
 ### Boot (this machine)
 

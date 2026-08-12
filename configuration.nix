@@ -97,8 +97,10 @@ in
       docker
       docker-compose
       eza
+      ffmpeg-full
       gcc
       git
+      glab
       glib
       gnome-shell
       gnome-themes-extra
@@ -116,6 +118,7 @@ in
       mullvad
       mullvad-vpn
       neovim
+      nvidia-container-toolkit
       papirus-icon-theme
       pavucontrol
       pyprland
@@ -200,6 +203,23 @@ in
     ];
   };
   hardware = {
+    graphics = {
+      enable = true;
+    };
+    nvidia = {
+      modesetting = {
+        enable = true;
+      };
+      nvidiaSettings = true;
+      open = false;
+      powerManagement = {
+        enable = false;
+        finegrained = false;
+      };
+    };
+    nvidia-container-toolkit = {
+      enable = true;
+    };
   };
   home-manager = {
     useGlobalPkgs = true;
@@ -228,7 +248,7 @@ in
     (import "${impermanence}/nixos.nix")
   ];
   networking = {
-    hostName = "silverbox";
+    hostName = "gamebox";
     networkmanager = {
       enable = true;
     };
@@ -309,6 +329,7 @@ in
     };
     xserver = {
       enable = true;
+      videoDrivers = ["nvidia"];
     };
   };
   system = {
@@ -354,6 +375,7 @@ in
     enable = true;
     rootless = {
       enable = true;
+      setSocketVariable = true;
     };
   };
 }
