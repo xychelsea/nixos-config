@@ -25,23 +25,24 @@ env("XDG_SESSION_TYPE", "wayland")
 env("XDG_SESSION_DESKTOP", "Hyprland")
 
 hl.monitor({
-  output = "DP-1",
-  mode = "2560x1440@144.01",
+  output = "eDP-1",
+  mode = "2880x1920@120",
   position = "0x0",
-  scale = 1,
+  scale = 1.5,
 })
 
 hl.monitor({
   output = "DP-2",
-  mode = "2560x1440@144.01",
-  position = "2560x0",
+  mode = "2560x1440@165.08Hz",
+  position = "1920x-1280",
   scale = 1,
+  transform = 1,
 })
 
 hl.config({
   input = {
     kb_layout = "us",
-    kb_options = "",
+    kb_options = "altwin:swap_alt_win",
     numlock_by_default = true,
     mouse_refocus = false,
     follow_mouse = 1,
@@ -92,8 +93,11 @@ hl.config({
 })
 
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("kitty"))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("cursor"))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("brave --password-store=basic"))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("signal-desktop"))
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("slack"))
+hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("spotify"))
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("vlc"))
 
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
