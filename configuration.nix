@@ -22,6 +22,7 @@ in
     kernelModules = [
     ];
     kernelParams = [
+      "amdgpu.backlight=1"
     ];
     loader = {
       efi = {
