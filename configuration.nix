@@ -90,6 +90,7 @@ in
     systemPackages = with pkgs; [
       adwaita-qt
       brave
+      brightnessctl
       catppuccin-sddm
       codeberg-cli
       curl
