@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+/#!/usr/bin/env bash
 set -euo pipefail
 
 NIXOS_DISK=${NIXOS_DISK:-/dev/nvme0n1}
@@ -19,8 +19,8 @@ NIXOS_SCRIPTS_DIR=${NIXOS_DIR}/scripts
 NIXOS_GTK_THEMES_DIR=${NIXOS_DIR}/themes
 NIXOS_GRUB_THEME_DIR=${NIXOS_DIR}/grub-theme
 
-NIXOS_CHANNEL_URL=https://nixos.org/channels/nixos-25.11
-NIXOS_HM_CHANNEL_URL=https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz
+NIXOS_CHANNEL_URL=https://nixos.org/channels/nixos-26.05
+NIXOS_HM_CHANNEL_URL=https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz
 
 NIXOS_CRYPT_NAME=nixos
 NIXOS_CRYPT_PART=/dev/mapper/${NIXOS_CRYPT_NAME}
@@ -302,8 +302,8 @@ install_system() {
   run "nixos-install --root ${NIXOS_ROOT_DIR}"
 
   nixos-enter --root ${NIXOS_ROOT_DIR} -- sh -lc \
-    'nix-channel --add https://nixos.org/channels/nixos-25.11 nixos; \
-    nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz home-manager; \
+    'nix-channel --add https://nixos.org/channels/nixos-26.05 nixos; \
+    nix-channel --add https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz home-manager; \
     nix-channel --update'
 }
 
