@@ -199,7 +199,7 @@ partition_with_sfdisk() {
   step "Partitioning with sfdisk"
   sfdisk --wipe always --wipe-partitions always "${NIXOS_DISK}" <<EOF
 label: gpt
-,512MiB,uefi,*
+,1024MiB,uefi,*
 ,,linux
 EOF
   run "sgdisk --change-name=1:ESP --change-name=2:${NIXOS_CRYPT_NAME} --typecode=2:8309 '${NIXOS_DISK}' || true"
