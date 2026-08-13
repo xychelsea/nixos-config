@@ -31,14 +31,6 @@ hl.monitor({
   scale = 1.5,
 })
 
-hl.monitor({
-  output = "DP-2",
-  mode = "2560x1440@165.08Hz",
-  position = "1920x-1280",
-  scale = 1,
-  transform = 1,
-})
-
 hl.config({
   input = {
     kb_layout = "us",
