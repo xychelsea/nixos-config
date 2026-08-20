@@ -18,7 +18,7 @@ in
         "/cryptroot.key" = "/persist/etc/cryptsetup-keys.d/cryptroot.key";
       };
     };
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages;
     kernelModules = [
     ];
     kernelParams = [
@@ -119,7 +119,6 @@ in
       mullvad-vpn
       neovim
       nvidia-container-toolkit
-      openrct2
       papirus-icon-theme
       pavucontrol
       pyprland
