@@ -18,7 +18,7 @@ in
         "/cryptroot.key" = "/persist/etc/cryptsetup-keys.d/cryptroot.key";
       };
     };
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages;
     kernelModules = [
     ];
     kernelParams = [

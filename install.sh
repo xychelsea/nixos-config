@@ -20,7 +20,7 @@ NIXOS_GTK_THEMES_DIR=${NIXOS_DIR}/themes
 NIXOS_GRUB_THEME_DIR=${NIXOS_DIR}/grub-theme
 
 NIXOS_CHANNEL_URL=https://nixos.org/channels/nixos-26.05
-NIXOS_HM_CHANNEL_URL=https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz
+NIXOS_HM_CHANNEL_URL=https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz
 
 NIXOS_CRYPT_NAME=nixos
 NIXOS_CRYPT_PART=/dev/mapper/${NIXOS_CRYPT_NAME}
@@ -199,7 +199,7 @@ partition_with_sfdisk() {
   step "Partitioning with sfdisk"
   sfdisk --wipe always --wipe-partitions always "${NIXOS_DISK}" <<EOF
 label: gpt
-,512MiB,uefi,*
+,1024MiB,uefi,*
 ,,linux
 EOF
   run "sgdisk --change-name=1:ESP --change-name=2:${NIXOS_CRYPT_NAME} --typecode=2:8309 '${NIXOS_DISK}' || true"
