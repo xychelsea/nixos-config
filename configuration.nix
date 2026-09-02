@@ -58,6 +58,7 @@ in
         directories = [
           ".config"
           ".cursor"
+          ".claude"
           ".local"
           ".ssh"
           ".themes"
@@ -66,6 +67,7 @@ in
           "Downloads"
         ];
         files = [
+          ".claude.json"
         ];
       };
       directories = [
