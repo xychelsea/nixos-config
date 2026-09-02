@@ -105,7 +105,6 @@ in
       glib
       gnome-shell
       gnome-themes-extra
-      gtk-engine-murrine
       home-manager
       hyprcursor
       hypridle
@@ -313,6 +312,9 @@ in
       enable = true;
     };
     mullvad-vpn = {
+      enable = true;
+    };
+    oo7 = {
       enable = true;
     };
     pipewire = {
