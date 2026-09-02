@@ -93,6 +93,7 @@ in
       brave
       catppuccin-sddm
       codeberg-cli
+      code-cursor
       curl
       clang
       docker
