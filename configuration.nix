@@ -117,6 +117,7 @@ in
       hyprpolkitagent
       jq
       kitty.terminfo
+      libsecret
       llvm
       mullvad
       mullvad-vpn
