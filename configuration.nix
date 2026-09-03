@@ -324,7 +324,7 @@ in
     };
     oo7 = {
       enable = true;
-    }
+    };
     pipewire = {
       alsa = {
         enable = true;
