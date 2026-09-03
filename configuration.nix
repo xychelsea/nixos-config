@@ -57,8 +57,8 @@ in
       users.xychelsea = {
         directories = [
           ".config"
-          ".cursor"
           ".claude"
+          ".cursor"
           ".local"
           ".ssh"
           ".themes"
