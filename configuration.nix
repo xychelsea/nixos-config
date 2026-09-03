@@ -95,6 +95,7 @@ in
       catppuccin-sddm
       codeberg-cli
       curl
+      cursor-code
       clang
       docker
       docker-compose
@@ -106,7 +107,6 @@ in
       glib
       gnome-shell
       gnome-themes-extra
-      gtk-engine-murrine
       home-manager
       hyprcursor
       hypridle
@@ -116,6 +116,7 @@ in
       hyprpolkitagent
       jq
       kitty.terminfo
+      libsecret
       llvm
       mullvad
       mullvad-vpn
@@ -321,6 +322,9 @@ in
     mullvad-vpn = {
       enable = true;
     };
+    oo7 = {
+      enable = true;
+    }
     pipewire = {
       alsa = {
         enable = true;
