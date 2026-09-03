@@ -94,8 +94,8 @@ in
       brave
       catppuccin-sddm
       codeberg-cli
+      code-cursor
       curl
-      cursor-code
       clang
       docker
       docker-compose
