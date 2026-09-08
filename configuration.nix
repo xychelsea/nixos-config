@@ -56,6 +56,7 @@ in
       users.xychelsea = {
         directories = [
           ".config"
+          ".claude"
           ".cursor"
           ".local"
           ".ssh"
@@ -65,6 +66,7 @@ in
           "Downloads"
         ];
         files = [
+          ".claude.json"
         ];
       };
       directories = [
@@ -296,6 +298,9 @@ in
     };
     mullvad-vpn = {
       enable = true;
+    };
+    oo7 = {
+      enable
     };
     pipewire = {
       alsa = {
