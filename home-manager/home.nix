@@ -2,7 +2,7 @@
 {
   imports = [
     ./modules/bash.nix
-    ./modules/cursor.nix
+    ./modules/claude.nix
     ./modules/fastfetch.nix
     ./modules/git.nix
     ./modules/hyprland.nix

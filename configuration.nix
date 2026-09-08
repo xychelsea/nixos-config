@@ -93,6 +93,7 @@ in
       brightnessctl
       catppuccin-sddm
       codeberg-cli
+      code-cursor
       curl
       clang
       docker
@@ -105,7 +106,6 @@ in
       glib
       gnome-shell
       gnome-themes-extra
-      gtk-engine-murrine
       home-manager
       hyprcursor
       hypridle
