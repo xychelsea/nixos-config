@@ -113,6 +113,7 @@ in
       efibootmgr
       ethtool
       eza
+      ffmpeg
       gcc
       git
       glib
