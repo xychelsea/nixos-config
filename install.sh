@@ -1,4 +1,4 @@
-/#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 NIXOS_DISK=${NIXOS_DISK:-/dev/nvme0n1}
