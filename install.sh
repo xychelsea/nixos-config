@@ -226,26 +226,53 @@ mount_subvolumes() {
   run "install -d ${NIXOS_ROOT_DIR}/persist/var/lib/nixos"
 }
 
-patch_hw_cfg() {
+sanitize_hw_cfg() {
   local f="${NIXOS_ROOT_DIR}/persist/etc/nixos/hardware-configuration.nix"
-  local args=()
-  for mp in "${!FS_DEV[@]}"; do
-    local mp_esc
-    mp_esc=$(printf '%s' "$mp" | sed 's/[\/&]/\\&/g')
-    args+=( -e "/fileSystems\\.\"${mp_esc}\"/,/}/ { s#device = [^;]*;#device = \"${FS_DEV[$mp]}\";# }" )
-  done
-  args+=( -e "/fileSystems\\.\"\\/persist\"/,/}/ {
-              /neededForBoot/! s/^([[:space:]]*)}/\1  neededForBoot = true;\n\1}/
-            }" )
-  sed -i -E "${args[@]}" "$f"
+  local tmp="${f}.tmp"
+
+  [ -f "${f}" ] || { warn "Missing generated hardware configuration: ${f}"; exit 1; }
+
+  # configuration.nix is the authority for the filesystem topology.  In
+  # particular, this host intentionally defines / and /home as tmpfs while
+  # /nix and /persist live on Btrfs.  nixos-generate-config observes the
+  # installer's temporary /mnt mounts and would otherwise add competing
+  # fileSystems declarations (for example, / as Btrfs), causing module
+  # evaluation conflicts.
+  awk '
+    BEGIN { skip_fs = 0; skip_swap = 0 }
+
+    skip_fs {
+      if ($0 ~ /^[[:space:]]*};[[:space:]]*$/) skip_fs = 0
+      next
+    }
+
+    skip_swap {
+      if ($0 ~ /;[[:space:]]*$/) skip_swap = 0
+      next
+    }
+
+    /^[[:space:]]*fileSystems\."/ {
+      if ($0 !~ /};[[:space:]]*$/) skip_fs = 1
+      next
+    }
+
+    /^[[:space:]]*swapDevices[[:space:]]*=/ {
+      if ($0 !~ /;[[:space:]]*$/) skip_swap = 1
+      next
+    }
+
+    { print }
+  ' "${f}" > "${tmp}"
+
+  mv "${tmp}" "${f}"
+  ok "Removed generated filesystem/swap declarations from hardware-configuration.nix"
 }
 
 generate_and_stage_configs() {
   step "Generating NixOS hardware config and staging your files"
-  if [ ! -f "${PWD}/hardware-configuration.nix" ]; then
-    run "nixos-generate-config --root ${NIXOS_ROOT_DIR} --dir ${NIXOS_ROOT_DIR}/persist/etc/nixos/"
-    patch_hw_cfg
-  fi
+  run "install -d ${NIXOS_ROOT_DIR}/persist/etc/nixos"
+  run "nixos-generate-config --root ${NIXOS_ROOT_DIR} --dir ${NIXOS_ROOT_DIR}/persist/etc/nixos/"
+  sanitize_hw_cfg
   run "install -d ${NIXOS_ROOT_DIR}/persist/etc/nixos/home-manager"
   run "cp -rf ${NIXOS_CONFIG} ${NIXOS_ROOT_DIR}/persist/etc/nixos/configuration.nix"
   run "cp -rf ${NIXOS_HM_CONFIG} ${NIXOS_ROOT_DIR}/persist/etc/nixos/home-manager/home.nix"
