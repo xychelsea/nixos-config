@@ -1,0 +1,3 @@
+[submodule "vendor/nixos-raspberrypi"]
+	path = vendor/nixos-raspberrypi
+	url = git@github.com:nvmd/nixos-raspberrypi
