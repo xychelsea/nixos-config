@@ -20,6 +20,9 @@ NIXOS_GTK_THEMES_DIR=${NIXOS_DIR}/themes
 NIXOS_GRUB_THEME_DIR=${NIXOS_DIR}/grub-theme
 NIXOS_CHANNEL_URL=https://nixos.org/channels/nixos-26.05
 NIXOS_HM_CHANNEL_URL=https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz
+NIXOS_RPI_REPO=https://github.com/nvmd/nixos-raspberrypi.git
+NIXOS_RPI_REV=v1.20260801.0
+NIXOS_RPI_SRC=${NIXOS_RPI_SRC:-/tmp/nixos-raspberrypi-${NIXOS_RPI_REV}}
 
 DD_WIPE=0
 if [[ "${1:-}" == "--wipe" ]]; then
@@ -77,6 +80,7 @@ preflight() {
     nixos-install
     nixos-enter
     nix-build
+    git
   )
   local cmd
   for cmd in "${required[@]}"; do
@@ -318,48 +322,108 @@ fix_persistent_home() {
 }
 
 install_system() {
-  step "Building NixOS system with classic nix-build"
+  step "Preparing Raspberry Pi 5 NixOS module set"
 
-  local nixpkgs_path="/nix/var/nix/profiles/per-user/root/channels/nixos"
-  local home_manager_path="/nix/var/nix/profiles/per-user/root/channels/home-manager"
   local config_path="${NIXOS_ROOT_DIR}/persist/etc/nixos/configuration.nix"
   local result_link="/tmp/raspi5-system"
+  local eval_expr="/tmp/raspi5-system.nix"
   local system
 
-  [ -e "${nixpkgs_path}/nixos/default.nix" ] || {
-    warn "NixOS channel is not available at ${nixpkgs_path}"
-    exit 1
-  }
-  [ -e "${home_manager_path}" ] || {
-    warn "Home Manager channel is not available at ${home_manager_path}"
-    exit 1
-  }
   [ -f "${config_path}" ] || {
     warn "Staged NixOS configuration is missing: ${config_path}"
     exit 1
   }
 
+  # Keep the install entirely on the classic Nix interface, but evaluate the
+  # target through nixos-raspberrypi so that the Pi 5 vendor kernel, firmware,
+  # bootloader modules, and the 16 KiB jemalloc compatibility overlay are part
+  # of the target system.  The source is pinned to the same release family as
+  # the installer rather than following the upstream development branch.
+  run "rm -rf '${NIXOS_RPI_SRC}'"
+  run "git clone --depth 1 --branch '${NIXOS_RPI_REV}' '${NIXOS_RPI_REPO}' '${NIXOS_RPI_SRC}'"
+
+  [ -f "${NIXOS_RPI_SRC}/default.nix" ] || {
+    warn "nixos-raspberrypi checkout is missing default.nix"
+    exit 1
+  }
+
+  cat > "${eval_expr}" <<'EOF_RPI_SYSTEM'
+{ rpiSrc, configPath }:
+
+let
+  rpi = import (builtins.toPath rpiSrc);
+
+  system = rpi.lib.nixosSystem {
+    modules = [
+      (
+        { lib, pkgs, nixos-raspberrypi, ... }:
+        {
+          imports = with nixos-raspberrypi.nixosModules; [
+            raspberry-pi-5.base
+            raspberry-pi-5.page-size-16k
+          ];
+
+          # configuration.nix still contains x86/cloudbox-era boot settings.
+          # Keep those overrides local to the installer until the repository
+          # configuration itself is cleaned up.
+          boot.kernelPackages = lib.mkForce
+            nixos-raspberrypi.packages.${pkgs.stdenv.hostPlatform.system}.linuxPackages_rpi5;
+
+          boot.loader.systemd-boot.enable = lib.mkForce false;
+          boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
+
+          boot.loader.raspberry-pi = {
+            enable = true;
+            bootloader = lib.mkForce "kernel";
+            firmwarePath = "/boot/firmware";
+          };
+
+          # The repository currently defines an EFI /boot mount.  Disable it
+          # and expose the FAT partition where the Raspberry Pi bootloader
+          # module expects firmware and generations.
+          fileSystems."/boot".enable = lib.mkForce false;
+          fileSystems."/boot/firmware" = {
+            device = "/dev/disk/by-label/FIRMWARE";
+            fsType = "vfat";
+            options = [ "fmask=0022" "dmask=0022" ];
+          };
+
+          # This Pi installation has only Btrfs storage.  Do not pull ZFS and
+          # its out-of-tree kernel module into the Raspberry Pi kernel build.
+          boot.supportedFilesystems.zfs = lib.mkForce false;
+          boot.zfs.extraPools = lib.mkForce [ ];
+        }
+      )
+
+      (builtins.toPath configPath)
+    ];
+  };
+in
+system.config.system.build.toplevel
+EOF_RPI_SYSTEM
+
+  step "Building Raspberry Pi 5 NixOS system with classic nix-build"
   run "rm -f '${result_link}'"
-  run "nix-build '${nixpkgs_path}/nixos' \
-    -A system \
-    -I 'nixpkgs=${nixpkgs_path}' \
-    -I 'home-manager=${home_manager_path}' \
-    -I 'nixos-config=${config_path}' \
+  run "nix-build '${eval_expr}' \\
+    --argstr rpiSrc '${NIXOS_RPI_SRC}' \\
+    --argstr configPath '${config_path}' \\
+    --option extra-substituters 'https://nixos-raspberrypi.cachix.org' \\
+    --option extra-trusted-public-keys 'nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI=' \\
     -o '${result_link}'"
 
   system="$(readlink -f "${result_link}")"
   [ -n "${system}" ] && [ -e "${system}" ] || {
-    warn "Failed to resolve built NixOS system closure"
+    warn "Failed to resolve built Raspberry Pi 5 NixOS system closure"
     exit 1
   }
 
-  ok "Built NixOS system: ${system}"
+  ok "Built Raspberry Pi 5 NixOS system: ${system}"
 
-  step "Running nixos-install with the prebuilt system closure"
-  run "nixos-install \
-    --root '${NIXOS_ROOT_DIR}' \
-    --system '${system}' \
-    --no-channel-copy \
+  step "Running nixos-install with the prebuilt Raspberry Pi system closure"
+  run "nixos-install \\
+    --root '${NIXOS_ROOT_DIR}' \\
+    --system '${system}' \\
+    --no-channel-copy \\
     --no-root-passwd"
 }
 
