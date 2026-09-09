@@ -5,6 +5,7 @@ NIXOS_DISK=${NIXOS_DISK:-/dev/nvme0n1}
 NIXOS_USER=xychelsea #${NIXOS_USER:-user}
 NIXOS_HOST=silverbox #${NIXOS_HOST:-nixos}
 
+# Raspberry Pi firmware boot partition. This is not a UEFI-mounted /boot/efi.
 NIXOS_BOOT_DIR=/boot/firmware
 NIXOS_ROOT_DIR=/mnt
 NIXOS_PART_OPTS="compress=zstd,noatime,discard=async"
@@ -75,6 +76,7 @@ preflight() {
     nixos-generate-config
     nixos-install
     nixos-enter
+    nix-build
   )
   local cmd
   for cmd in "${required[@]}"; do
@@ -252,6 +254,7 @@ generate_and_stage_configs() {
   run "ln -sfn '/persist/etc/nixos' '${NIXOS_ROOT_DIR}/etc/nixos'"
   run "ln -sf '/persist/etc/nixos/home-manager/home.nix' '${NIXOS_ROOT_DIR}/persist/home/${NIXOS_USER}/.config/home-manager/home.nix'"
   run "ln -sf '/persist/etc/nixos/home-manager/modules' '${NIXOS_ROOT_DIR}/persist/home/${NIXOS_USER}/.config/home-manager/modules'"
+  run "ln -sfn '/projects' '${NIXOS_ROOT_DIR}/persist/home/${NIXOS_USER}/Projects'"
   run "ln -sfn '/dev/null' '${NIXOS_ROOT_DIR}/persist/home/${NIXOS_USER}/.bash_history'"
   run "ln -sfn '/dev/null' '${NIXOS_ROOT_DIR}/persist/home/${NIXOS_USER}/.zsh_history'"
   if [ -d "${NIXOS_SCRIPTS_DIR}" ]; then run "cp -rf ${NIXOS_SCRIPTS_DIR} ${NIXOS_ROOT_DIR}/persist/etc/nixos/scripts"; fi
@@ -288,12 +291,49 @@ fix_persistent_home() {
 }
 
 install_system() {
-  step "Running nixos-install"
-  run "nixos-install --root ${NIXOS_ROOT_DIR}"
-  nixos-enter --root ${NIXOS_ROOT_DIR} -- sh -lc \
-    'nix-channel --add https://nixos.org/channels/nixos-26.05 nixos; \
-     nix-channel --add https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz home-manager; \
-     nix-channel --update'
+  step "Building NixOS system with classic nix-build"
+
+  local nixpkgs_path="/nix/var/nix/profiles/per-user/root/channels/nixos"
+  local home_manager_path="/nix/var/nix/profiles/per-user/root/channels/home-manager"
+  local config_path="${NIXOS_ROOT_DIR}/persist/etc/nixos/configuration.nix"
+  local result_link="/tmp/raspi5-system"
+  local system
+
+  [ -e "${nixpkgs_path}/nixos/default.nix" ] || {
+    warn "NixOS channel is not available at ${nixpkgs_path}"
+    exit 1
+  }
+  [ -e "${home_manager_path}" ] || {
+    warn "Home Manager channel is not available at ${home_manager_path}"
+    exit 1
+  }
+  [ -f "${config_path}" ] || {
+    warn "Staged NixOS configuration is missing: ${config_path}"
+    exit 1
+  }
+
+  run "rm -f '${result_link}'"
+  run "nix-build '${nixpkgs_path}/nixos' \
+    -A system \
+    -I 'nixpkgs=${nixpkgs_path}' \
+    -I 'home-manager=${home_manager_path}' \
+    -I 'nixos-config=${config_path}' \
+    -o '${result_link}'"
+
+  system="$(readlink -f "${result_link}")"
+  [ -n "${system}" ] && [ -e "${system}" ] || {
+    warn "Failed to resolve built NixOS system closure"
+    exit 1
+  }
+
+  ok "Built NixOS system: ${system}"
+
+  step "Running nixos-install with the prebuilt system closure"
+  run "nixos-install \
+    --root '${NIXOS_ROOT_DIR}' \
+    --system '${system}' \
+    --no-channel-copy \
+    --no-root-passwd"
 }
 
 verify_firmware_partition() {
