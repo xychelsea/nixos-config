@@ -17,23 +17,12 @@ in
     kernelParams = [
     ];
     loader = {
+      systemd-boot = {
+        enable = true;
+      };
       efi = {
         canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot/efi";
-      };
-      generic-extlinux-compatible = {
-        enable = false;
-      };
-      grub = {
-        devices = [ "nodev" ];
-        enable = true;
-        enableCryptodisk = false;
-        efiSupport = true;
-        fontSize = 36;
-        fsIdentifier = "provided";
-        gfxmodeEfi = "auto";
-        gfxpayloadEfi = "keep";
-        theme = ./grub-theme;
+        efiSysMountPoint = "/boot";
       };
     };
     supportedFilesystems = [
@@ -100,18 +89,15 @@ in
       wget
     ];
   };
+
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-label/nixos";
-      fsType = "btrfs";
-      options = [
-        "subvol=@"
-        "compress=zstd"
-        "noatime"
-        "discard=async" 
-      ];
+      device = "none";
+      fsType = "tmpfs";
+      neededForBoot = true;
+      options = [ "defaults" ];
     };
-    "/boot/efi" = {
+    "/boot" = {
       device = "/dev/disk/by-label/EFI";
       fsType = "vfat";
       options = [
@@ -207,9 +193,9 @@ in
   };
   nixpkgs = {
     config = {
-      allowUnfree = false;
+      allowUnfree = true;
     };
-    hostPlatform = "x86_64-linux";
+    hostPlatform = lib.mkDefault "aarch64-linux";
     overlays = [
       (import "${homeManager}/overlay.nix")
     ];
