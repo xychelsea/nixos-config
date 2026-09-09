@@ -25,10 +25,23 @@ NIXOS_RPI_REV=v1.20260801.0
 NIXOS_RPI_SRC=${NIXOS_RPI_SRC:-/tmp/nixos-raspberrypi-${NIXOS_RPI_REV}}
 
 DD_WIPE=0
-if [[ "${1:-}" == "--wipe" ]]; then
-  DD_WIPE=1
-  shift
-fi
+RESUME_BUILD=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --wipe)
+      DD_WIPE=1
+      shift
+      ;;
+    --resume-build)
+      RESUME_BUILD=1
+      shift
+      ;;
+    *)
+      printf "Unknown argument: %s\n" "$1" >&2
+      exit 2
+      ;;
+  esac
+done
 
 declare -A SUBVOL_TO_MOUNTPOINT=(
   ["@"]="/"
@@ -369,6 +382,17 @@ let
           boot.kernelPackages = lib.mkForce
             nixos-raspberrypi.packages.${pkgs.stdenv.hostPlatform.system}.linuxPackages_rpi5;
 
+          # rustup 1.29.0 reaches a successful cargo build on aarch64 here,
+          # then fails only in cargoCheckHook. Keep rustup in the target while
+          # disabling that package check for this Pi-specific installation.
+          nixpkgs.overlays = lib.mkAfter [
+            (final: prev: {
+              rustup = prev.rustup.overrideAttrs (_old: {
+                doCheck = false;
+              });
+            })
+          ];
+
           boot.loader.systemd-boot.enable = lib.mkForce false;
           boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
 
@@ -452,6 +476,18 @@ set_user_password() {
 
 main() {
   preflight
+
+  if [ "${RESUME_BUILD}" -eq 1 ]; then
+    step "Resuming from NixOS system build; disk layout and staged configuration are left untouched"
+    install_system
+    fix_persistent_home
+    seed_target_channels
+    verify_firmware_partition
+    set_user_password
+    ok "Installation complete."
+    return
+  fi
+
   reset_mounts
   wipe_disk
   partition_with_sfdisk
