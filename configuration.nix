@@ -57,6 +57,7 @@ in
         directories = [
           ".config"
           ".claude"
+          ".codex"
           ".cursor"
           ".local"
           ".ssh"
