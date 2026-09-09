@@ -207,7 +207,7 @@ in
   };
   nixpkgs = {
     config = {
-      allowUnfree = false;
+      allowUnfree = true;
     };
     hostPlatform = "x86_64-linux";
     overlays = [
