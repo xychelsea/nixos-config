@@ -16,6 +16,7 @@ set -euo pipefail
 #   NIXOS_USER=xychelsea
 #   NIXOS_HOST=<hostname used for status/result names only>
 #   NIXOS_DIR=/path/to/nixos-config
+#   NIXOS_PASSWD_FILE=/persist/secrets/xychelsea.passwd
 #   NIXOS_RPI_SRC=/tmp/nixos-raspberrypi-v1.20260801.0
 
 NIXOS_PROFILE=${NIXOS_PROFILE:-}
@@ -24,6 +25,7 @@ NIXOS_USER=${NIXOS_USER:-xychelsea}
 NIXOS_HOST=${NIXOS_HOST:-}
 NIXOS_ROOT_DIR=${NIXOS_ROOT_DIR:-/mnt}
 NIXOS_PART_OPTS=${NIXOS_PART_OPTS:-compress=zstd,noatime,discard=async}
+NIXOS_PASSWD_FILE=${NIXOS_PASSWD_FILE:-/persist/secrets/xychelsea.passwd}
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 NIXOS_DIR=${NIXOS_DIR:-${SCRIPT_DIR}}
@@ -250,9 +252,11 @@ preflight() {
     blockdev
     btrfs
     findmnt
+    grep
     lsblk
     mkfs.btrfs
     mkfs.fat
+    mkpasswd
     mountpoint
     nix-build
     nix-channel
@@ -281,6 +285,11 @@ preflight() {
       exit 1
     }
   done
+
+  if ! mkpasswd --method=help 2>&1 | grep -qw yescrypt; then
+    warn "mkpasswd does not advertise yescrypt support"
+    exit 1
+  fi
 
   ok "Profile: ${NIXOS_PROFILE}"
   ok "Disk: ${NIXOS_DISK}"
@@ -834,15 +843,24 @@ verify_boot() {
   esac
 }
 
-set_user_password() {
-  step "Setting password for user ${NIXOS_USER}"
+create_user_password_file() {
+  local target="${NIXOS_ROOT_DIR}${NIXOS_PASSWD_FILE}"
+  local target_dir
+  local pw1 pw2 hash
 
-  exec < /dev/tty
-  local pw1 pw2
+  target_dir=$(dirname -- "${target}")
+
+  if (( RESUME_BUILD )) && [ -s "${target}" ]; then
+    ok "Reusing existing password hash at ${NIXOS_PASSWD_FILE}"
+    return 0
+  fi
+
+  step "Creating yescrypt password hash for ${NIXOS_USER}"
+
   while :; do
-    read -rs -p "Enter new password for ${NIXOS_USER}: " pw1
+    read -rs -p "Enter new password for ${NIXOS_USER}: " pw1 < /dev/tty
     echo
-    read -rs -p "Confirm password: " pw2
+    read -rs -p "Confirm password: " pw2 < /dev/tty
     echo
     if [[ "${pw1}" == "${pw2}" && -n "${pw1}" ]]; then
       break
@@ -850,12 +868,27 @@ set_user_password() {
     warn "Passwords did not match or were empty. Try again."
   done
 
-  step "Applying password inside target"
-  printf '%s:%s\n' "${NIXOS_USER}" "${pw1}" |
-    nixos-enter --root "${NIXOS_ROOT_DIR}" -- chpasswd
-
+  # Read the password from stdin so it never appears in argv/process listings.
+  hash=$(printf '%s\n' "${pw1}" | mkpasswd --method=yescrypt --stdin)
   unset pw1 pw2
-  ok "Password set for ${NIXOS_USER}"
+
+  if [[ "${hash}" != '$y$'* ]]; then
+    unset hash
+    warn "mkpasswd did not return a yescrypt hash"
+    exit 1
+  fi
+
+  run "install -d -m 0700 '${target_dir}'"
+
+  # Avoid run/eval here: the hash should not be printed in installer output.
+  (
+    umask 077
+    printf '%s\n' "${hash}" > "${target}"
+  )
+  chmod 0600 "${target}"
+  unset hash
+
+  ok "Created ${NIXOS_PASSWD_FILE} using yescrypt"
 }
 
 profile_prepare_for_build() {
@@ -872,12 +905,12 @@ main() {
     step "Resuming installation; partitioning and formatting are left untouched"
     prepare_resume_mounts
     seed_channels
+    create_user_password_file
     profile_prepare_for_build
     install_system
     fix_persistent_home
     seed_target_channels
     verify_boot
-    set_user_password
     ok "${NIXOS_PROFILE} installation complete."
     return
   fi
@@ -890,12 +923,12 @@ main() {
   mount_subvolumes
   generate_and_stage_configs
   seed_channels
+  create_user_password_file
   profile_prepare_for_build
   install_system
   fix_persistent_home
   seed_target_channels
   verify_boot
-  set_user_password
 
   ok "${NIXOS_PROFILE} installation complete."
 }
