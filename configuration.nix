@@ -107,6 +107,7 @@ in
       git
       glab
       glib
+      glow
       gnome-shell
       gnome-themes-extra
       home-manager
