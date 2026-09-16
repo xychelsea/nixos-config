@@ -2,14 +2,17 @@
 set -euo pipefail
 
 # Unified NixOS installer for:
-#   slimbox - UEFI + LUKS2 + Btrfs
-#   raspi5  - Raspberry Pi firmware + unencrypted Btrfs
+#   slimbox              - UEFI + LUKS2 + Btrfs
+#   raspi5               - Raspberry Pi firmware + unencrypted Btrfs
+#   reserver-industrial  - Jetson/JetPack UEFI + LUKS2 + Btrfs
 #
 # Examples:
 #   sudo ./install.sh --profile slimbox
 #   sudo ./install.sh --profile raspi5
+#   sudo ./install.sh --profile reserver-industrial
 #   sudo ./install.sh --profile slimbox --resume-build
 #   sudo ./install.sh --profile raspi5 --resume-build
+#   sudo ./install.sh --profile reserver-industrial --resume-build
 #
 # Environment overrides:
 #   NIXOS_DISK=/dev/nvme0n1
@@ -37,6 +40,7 @@ NIXOS_WALLPAPERS=${NIXOS_WALLPAPERS:-${NIXOS_DIR}/wallpapers}
 NIXOS_SCRIPTS_DIR=${NIXOS_SCRIPTS_DIR:-${NIXOS_DIR}/scripts}
 NIXOS_GTK_THEMES_DIR=${NIXOS_GTK_THEMES_DIR:-${NIXOS_DIR}/themes}
 NIXOS_GRUB_THEME_DIR=${NIXOS_GRUB_THEME_DIR:-${NIXOS_DIR}/grub-theme}
+NIXOS_VENDOR_DIR=${NIXOS_VENDOR_DIR:-${NIXOS_DIR}/vendor}
 
 NIXOS_CHANNEL_URL=${NIXOS_CHANNEL_URL:-https://nixos.org/channels/nixos-26.05}
 NIXOS_HM_CHANNEL_URL=${NIXOS_HM_CHANNEL_URL:-https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz}
@@ -65,6 +69,7 @@ NIXOS_BOOT_SPEC=
 NIXOS_BOOT_MODE=
 NIXOS_BUILD_MODE=
 NIXOS_ENCRYPTED=0
+NIXOS_STAGE_VENDOR=0
 NIXOS_BOOT_PART=
 NIXOS_ROOT_PART=
 NIXOS_FS_DEVICE=
@@ -85,12 +90,14 @@ usage() {
   cat <<'EOF_USAGE'
 Usage:
   sudo ./install.sh --profile slimbox [--wipe]
-  sudo ./install.sh --profile raspi5  [--wipe]
+  sudo ./install.sh --profile raspi5 [--wipe]
+  sudo ./install.sh --profile reserver-industrial [--wipe]
   sudo ./install.sh --profile PROFILE --resume-build
 
 Profiles:
-  slimbox   UEFI boot, LUKS2-encrypted Btrfs
-  raspi5    Native Raspberry Pi firmware boot, unencrypted Btrfs
+  slimbox              UEFI boot, LUKS2-encrypted Btrfs
+  raspi5               Native Raspberry Pi firmware boot, unencrypted Btrfs
+  reserver-industrial  Jetson/JetPack UEFI boot, LUKS2-encrypted Btrfs
 
 Options:
   --profile NAME     Required unless NIXOS_PROFILE is set.
@@ -186,8 +193,24 @@ load_profile() {
       NIXOS_ENCRYPTED=0
       ;;
 
+    reserver-industrial)
+      # NVIDIA Jetson Orin NX / JetPack branch. Its tracked configuration mounts
+      # the EFI filesystem at /boot and imports modules from ./vendor.
+      NIXOS_HOST=${NIXOS_HOST:-mediabox}
+      NIXOS_BOOT_DIR=/boot
+      NIXOS_BOOT_LABEL=EFI
+      NIXOS_BOOT_PART_NAME=ESP
+      NIXOS_ROOT_PART_NAME=nixos
+      NIXOS_ROOT_GPT_TYPE=8309
+      NIXOS_BOOT_SPEC=',1GiB,uefi,*'
+      NIXOS_BOOT_MODE=uefi
+      NIXOS_BUILD_MODE=nixos
+      NIXOS_ENCRYPTED=0
+      NIXOS_STAGE_VENDOR=1
+      ;;
+
     '')
-      warn "A profile is required. Use --profile slimbox or --profile raspi5."
+      warn "A profile is required. Use --profile slimbox, --profile raspi5, or --profile reserver-industrial."
       exit 2
       ;;
 
@@ -244,6 +267,21 @@ preflight() {
       warn "Missing ${NIXOS_HM_MODULES}"
       exit 1
     }
+
+    if (( NIXOS_STAGE_VENDOR )); then
+      [ -d "${NIXOS_VENDOR_DIR}" ] || {
+        warn "Missing ${NIXOS_VENDOR_DIR}; ${NIXOS_PROFILE} imports repository vendor modules"
+        exit 1
+      }
+      [ -e "${NIXOS_VENDOR_DIR}/flake-compat/default.nix" ] || {
+        warn "Missing ${NIXOS_VENDOR_DIR}/flake-compat/default.nix"
+        exit 1
+      }
+      [ -d "${NIXOS_VENDOR_DIR}/jetpack-nixos" ] || {
+        warn "Missing ${NIXOS_VENDOR_DIR}/jetpack-nixos"
+        exit 1
+      }
+    fi
   fi
 
   local required=(
@@ -568,6 +606,12 @@ generate_and_stage_configs() {
   run "cp -f '${NIXOS_HM_CONFIG}' '${NIXOS_ROOT_DIR}/persist/etc/nixos/home-manager/home.nix'"
   run "rm -rf '${NIXOS_ROOT_DIR}/persist/etc/nixos/home-manager/modules'"
   run "cp -a '${NIXOS_HM_MODULES}' '${NIXOS_ROOT_DIR}/persist/etc/nixos/home-manager/modules'"
+
+  if (( NIXOS_STAGE_VENDOR )); then
+    step "Staging repository vendor modules for ${NIXOS_PROFILE}"
+    run "rm -rf '${NIXOS_ROOT_DIR}/persist/etc/nixos/vendor'"
+    run "cp -a '${NIXOS_VENDOR_DIR}' '${NIXOS_ROOT_DIR}/persist/etc/nixos/vendor'"
+  fi
 
   run "install -d '${NIXOS_ROOT_DIR}/etc'"
   run "ln -sfn '/persist/etc/nixos' '${NIXOS_ROOT_DIR}/etc/nixos'"
