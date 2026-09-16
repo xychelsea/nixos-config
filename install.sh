@@ -3,14 +3,17 @@ set -euo pipefail
 
 # Unified NixOS installer for:
 #   slimbox              - UEFI + LUKS2 + Btrfs
+#   gamebox              - UEFI + GRUB + LUKS2 + Btrfs
 #   raspi5               - Raspberry Pi firmware + unencrypted Btrfs
 #   reserver-industrial  - Jetson/JetPack UEFI + LUKS2 + Btrfs
 #
 # Examples:
 #   sudo ./install.sh --profile slimbox
+#   sudo ./install.sh --profile gamebox
 #   sudo ./install.sh --profile raspi5
 #   sudo ./install.sh --profile reserver-industrial
 #   sudo ./install.sh --profile slimbox --resume-build
+#   sudo ./install.sh --profile gamebox --resume-build
 #   sudo ./install.sh --profile raspi5 --resume-build
 #   sudo ./install.sh --profile reserver-industrial --resume-build
 #
@@ -90,12 +93,14 @@ usage() {
   cat <<'EOF_USAGE'
 Usage:
   sudo ./install.sh --profile slimbox [--wipe]
+  sudo ./install.sh --profile gamebox [--wipe]
   sudo ./install.sh --profile raspi5 [--wipe]
   sudo ./install.sh --profile reserver-industrial [--wipe]
   sudo ./install.sh --profile PROFILE --resume-build
 
 Profiles:
   slimbox              UEFI boot, LUKS2-encrypted Btrfs
+  gamebox              UEFI/GRUB boot, LUKS2-encrypted Btrfs
   raspi5               Native Raspberry Pi firmware boot, unencrypted Btrfs
   reserver-industrial  Jetson/JetPack UEFI boot, LUKS2-encrypted Btrfs
 
@@ -180,6 +185,21 @@ load_profile() {
       NIXOS_ENCRYPTED=1
       ;;
 
+    gamebox)
+      # x86_64 gaming workstation. The tracked configuration uses GRUB in EFI
+      # mode with /boot/efi and a LUKS2-encrypted Btrfs root.
+      NIXOS_HOST=${NIXOS_HOST:-gamebox}
+      NIXOS_BOOT_DIR=/boot/efi
+      NIXOS_BOOT_LABEL=EFI
+      NIXOS_BOOT_PART_NAME=ESP
+      NIXOS_ROOT_PART_NAME=${NIXOS_CRYPT_NAME}
+      NIXOS_ROOT_GPT_TYPE=8309
+      NIXOS_BOOT_SPEC=',1GiB,uefi,*'
+      NIXOS_BOOT_MODE=uefi
+      NIXOS_BUILD_MODE=nixos
+      NIXOS_ENCRYPTED=1
+      ;;
+
     raspi5)
       NIXOS_HOST=${NIXOS_HOST:-raspi5}
       NIXOS_BOOT_DIR=/boot/firmware
@@ -210,7 +230,7 @@ load_profile() {
       ;;
 
     '')
-      warn "A profile is required. Use --profile slimbox, --profile raspi5, or --profile reserver-industrial."
+      warn "A profile is required. Use --profile slimbox, --profile gamebox, --profile raspi5, or --profile reserver-industrial."
       exit 2
       ;;
 
