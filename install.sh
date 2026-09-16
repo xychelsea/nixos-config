@@ -19,10 +19,10 @@ set -euo pipefail
 #
 # Environment overrides:
 #   NIXOS_DISK=/dev/nvme0n1
-#   NIXOS_USER=xychelsea
+#   NIXOS_USER=username
 #   NIXOS_HOST=<hostname used for status/result names only>
 #   NIXOS_DIR=/path/to/nixos-config
-#   NIXOS_PASSWD_FILE=/persist/secrets/xychelsea.passwd
+#   NIXOS_PASSWD_FILE=/persist/secrets/username.passwd
 #   NIXOS_RPI_SRC=/tmp/nixos-raspberrypi-v1.20260801.0
 
 NIXOS_PROFILE=${NIXOS_PROFILE:-}
