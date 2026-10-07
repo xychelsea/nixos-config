@@ -42,8 +42,13 @@ Notable configuration on this branch:
 - **No** LUKS, Btrfs impermanence, GRUB, SDDM, or Docker stack from the Linux templates
 
 Checkout / config path on this Mac: **`/etc/nix-darwin`**.
+=======
+- Hyprland + UWSM session via SDDM (Catppuccin)
+- Mullvad VPN, Docker (data-root under `/persist`), rootless Docker enabled
+- `nixpkgs.config.allowUnfree = true`
+- No proprietary NVIDIA stack (contrast with `slimbox`)
 
----
+Checkout path on this host: `/persist/etc/nixos`.
 
 ## Fleet / branches
 

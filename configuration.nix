@@ -37,7 +37,7 @@
   ];
   nixpkgs = {
     config = {
-      allowUnfree = false;
+      allowUnfree = true;
     };
     hostPlatform = "aarch64-darwin";
   };
