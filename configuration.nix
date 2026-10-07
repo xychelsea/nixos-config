@@ -38,7 +38,6 @@ in
         enable = false;
       };
       efi = {
-        enable = false;
       };
     };
     supportedFilesystems = [
