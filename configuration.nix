@@ -5,11 +5,22 @@ let
   };
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
+  rpi = import ./vendor/nixos-raspberrypi;
 in
 {
+  _module = {
+    args = {
+      nixos-raspberrypi = rpi;
+    };
+  };
   boot = {
     consoleLogLevel = 4;
     initrd = {
+    };
+    kernel = {
+      sysctl = {
+        "vm.mmap_rnd_bits" = 30;
+      };
     };
     kernelPackages = pkgs.linuxPackages_6_12;
     kernelModules = [
@@ -17,12 +28,17 @@ in
     kernelParams = [
     ];
     loader = {
-      systemd-boot = {
+      raspberry-pi = {
         enable = true;
+        bootloader = "kernel";
+        firmwarePath = "/boot/firmware";
+        configurationLimit = 8;
+      };
+      systemd-boot = {
+        enable = false;
       };
       efi = {
-        canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot";
+        enable = false;
       };
     };
     supportedFilesystems = [
@@ -30,7 +46,7 @@ in
       "zfs"
     ];
     zfs = {
-      extraPools = [ "tank" ];
+      extraPools = [ ];
       forceImportRoot = false;
     };
   };
@@ -97,9 +113,10 @@ in
       neededForBoot = true;
       options = [ "defaults" ];
     };
-    "/boot" = {
-      device = "/dev/disk/by-label/EFI";
+    "/boot/firmware" = {
+      device = "/dev/disk/by-label/FIRMWARE";
       fsType = "vfat";
+      neededForBoot = true;
       options = [
         "fmask=0022"
         "dmask=0022"
@@ -108,7 +125,6 @@ in
     "/home" = {
       device = "none";
       fsType = "tmpfs";
-      neededForBoot = true;
       options = [ "defaults" ];
     };
     "/nix" = {
@@ -163,12 +179,17 @@ in
     ./hardware-configuration.nix
     (import "${homeManager}/nixos")
     (import "${impermanence}/nixos.nix")
+    rpi.lib.inject-overlays
+    rpi.nixosModules.nixpkgs-rpi
+    rpi.nixosModules.trusted-nix-caches
+    rpi.nixosModules."raspberry-pi-5".base
+    rpi.nixosModules."raspberry-pi-5"."page-size-16k"
   ];
   networking = {
     firewall = {
       allowedTCPPorts = [ 36122 ];
     };
-    hostName = "cloudbox";
+    hostName = "pibox";
     hostId = "1a2b3c4d";
     interfaces = {
       enp5s0 = {
