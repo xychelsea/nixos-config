@@ -104,7 +104,7 @@ Hyprland, Waybar, Rofi, Kitty, SDDM, PipeWire, Mullvad — on `main`, `silverbox
 
 ## Repository structure
 
-Layout on this branch (`cloudbox`):
+Layout on this branch (`pibox`):
 
 ```
 /persist/etc/nixos/
@@ -276,7 +276,7 @@ Home Manager on these configs is often pinned via `fetchTarball` to `release-26.
 
 ### Architecture
 
-- This machine: `x86_64-linux`
+- This machine: `aarch64-linux`
 
 ### Services (this machine)
 
