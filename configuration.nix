@@ -124,6 +124,7 @@ in
     "/home" = {
       device = "none";
       fsType = "tmpfs";
+      neededForBoot = true;
       options = [ "defaults" ];
     };
     "/nix" = {
@@ -152,6 +153,14 @@ in
   fonts = {
   };
   hardware = {
+    cpu = {
+      amd = {
+        updateMicrocode = lib.mkForce false;
+      };
+      intel = {
+        updateMicrocode = lib.mkForce false;
+      };
+    };
   };
   home-manager = {
     useGlobalPkgs = true;
@@ -178,11 +187,6 @@ in
     ./hardware-configuration.nix
     (import "${homeManager}/nixos")
     (import "${impermanence}/nixos.nix")
-    rpi.lib.inject-overlays
-    rpi.nixosModules.nixpkgs-rpi
-    rpi.nixosModules.trusted-nix-caches
-    rpi.nixosModules."raspberry-pi-5".base
-    rpi.nixosModules."raspberry-pi-5"."page-size-16k"
   ];
   networking = {
     firewall = {
