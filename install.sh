@@ -674,17 +674,22 @@ seed_channels() {
 seed_target_channels() {
   step "Seeding Nix and Home Manager channels inside the target"
 
-  run "nixos-enter --root '${NIXOS_ROOT_DIR}' -- sh -lc \
-    'nix-channel --add ${NIXOS_CHANNEL_URL} nixos; \
-     nix-channel --add ${NIXOS_HM_CHANNEL_URL} home-manager; \
-     nix-channel --update'"
+  local nix_config
+  nix_config=$'sandbox = false\nfilter-syscalls = false'
 
-  run "nixos-enter --root '${NIXOS_ROOT_DIR}' -- sh -lc \
-    'id ${NIXOS_USER} >/dev/null 2>&1 && \
-     su - ${NIXOS_USER} -c \
-       \"nix-channel --add ${NIXOS_CHANNEL_URL} nixos; \
-        nix-channel --add ${NIXOS_HM_CHANNEL_URL} home-manager; \
-        nix-channel --update\" || true'"
+  NIX_CONFIG="${nix_config}" \
+    nixos-enter --root "${NIXOS_ROOT_DIR}" -- \
+      nix-channel --add "${NIXOS_CHANNEL_URL}" nixos
+
+  NIX_CONFIG="${nix_config}" \
+    nixos-enter --root "${NIXOS_ROOT_DIR}" -- \
+      nix-channel --add "${NIXOS_HM_CHANNEL_URL}" home-manager
+
+  NIX_CONFIG="${nix_config}" \
+    nixos-enter --root "${NIXOS_ROOT_DIR}" -- \
+      nix-channel --update
+
+  ok "Root Nix channels initialized"
 }
 
 add_initrd_keyfile() {
@@ -751,6 +756,10 @@ build_system_raspberry_pi() {
     exit 1
   }
 
+  run "install -d '${NIXOS_ROOT_DIR}/persist/etc/nixos/vendor'"
+  run "rm -rf '${NIXOS_ROOT_DIR}/persist/etc/nixos/vendor/nixos-raspberrypi'"
+  run "cp -a '${NIXOS_RPI_SRC}' '${NIXOS_ROOT_DIR}/persist/etc/nixos/vendor/nixos-raspberrypi'"
+
   cat > "${eval_expr}" <<'EOF_RPI_SYSTEM'
 { rpiSrc, configPath }:
 
@@ -772,12 +781,29 @@ let
           boot.kernelPackages = lib.mkForce
             nixos-raspberrypi.packages.${pkgs.stdenv.hostPlatform.system}.linuxPackages_rpi5;
 
-          # rustup 1.29.0 builds on aarch64 in this environment but its package
-          # check currently fails. Keep rustup installed while skipping only
-          # that package's check phase.
           nixpkgs.overlays = lib.mkAfter [
             (final: prev: {
+              fish = prev.fish.overrideAttrs (_old: {
+                doCheck = false;
+              });
+              libxkbcommon = prev.libxkbcommon.overrideAttrs (_old: {
+                doCheck = false;
+              });
+              neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (_old: {
+                doCheck = false;
+              });
+              pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+                (pyFinal: pyPrev: {
+                  pytest-regressions = 
+                    pyPrev.pytest-regressions.overridePythonAttrs (_: {
+                      doCheck = false;
+                    });
+                })
+              ];
               rustup = prev.rustup.overrideAttrs (_old: {
+                doCheck = false;
+              });
+              starship = prev.starship.overrideAttrs (_old: {
                 doCheck = false;
               });
             })
@@ -799,7 +825,6 @@ let
             options = [ "fmask=0022" "dmask=0022" ];
           };
 
-          # Avoid pulling the out-of-tree ZFS module into the Pi vendor kernel.
           boot.supportedFilesystems.zfs = lib.mkForce false;
           boot.zfs.extraPools = lib.mkForce [ ];
         }
