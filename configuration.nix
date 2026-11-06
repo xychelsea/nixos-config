@@ -8,6 +8,12 @@ let
 in
 {
   boot = {
+    binfmt = {
+      emulatedSystems = [
+        "aarch64-linux"
+      ];
+      preferStaticEmulators = true;
+    };
     consoleLogLevel = 4;
     initrd = {
       luks.devices.nixos = {
@@ -95,7 +101,6 @@ in
       adwaita-qt
       brave
       catppuccin-sddm
-      codeberg-cli
       code-cursor
       curl
       clang
@@ -107,9 +112,9 @@ in
       git
       glab
       glib
-      glow
       gnome-shell
       gnome-themes-extra
+      gptfdisk
       home-manager
       hyprcursor
       hypridle
@@ -126,6 +131,7 @@ in
       neovim
       nvidia-container-toolkit
       papirus-icon-theme
+      parted
       pavucontrol
       pyprland
       python3
@@ -268,6 +274,12 @@ in
     settings = {
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
+      extra-substituters = [
+        "https://nixos-raspberrypi.cachix.org"
+      ];
+      extra-trusted-public-keys = [
+        "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
+      ];
     };
   };
   nixpkgs = {
@@ -342,7 +354,7 @@ in
     };
   };
   system = {
-    stateVersion = "26.05";
+    stateVersion = "26.11";
   };
   systemd = {
     tmpfiles = {
