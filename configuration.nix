@@ -1,13 +1,19 @@
 { config, pkgs, lib, ... }:
 let
   homeManager = builtins.fetchTarball {
-    url = "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz";
+    url = "https://github.com/nix-community/home-manager/archive/master.tar.gz";
   };
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
 in
 {
   boot = {
+    binfmt = {
+      emulatedSystems = [
+        "aarch64-linux"
+      ];
+      preferStaticEmulators = true;
+    };
     consoleLogLevel = 4;
     initrd = {
       luks.devices.nixos = {
@@ -94,7 +100,6 @@ in
       adwaita-qt
       brave
       catppuccin-sddm
-      codeberg-cli
       code-cursor
       curl
       clang
@@ -108,6 +113,7 @@ in
       glib
       gnome-shell
       gnome-themes-extra
+      gptfdisk
       home-manager
       hyprcursor
       hypridle
@@ -124,6 +130,7 @@ in
       neovim
       nvidia-container-toolkit
       papirus-icon-theme
+      parted
       pavucontrol
       pyprland
       python3
@@ -271,6 +278,12 @@ in
     settings = {
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
+      extra-substituters = [
+        "https://nixos-raspberrypi.cachix.org"
+      ];
+      extra-trusted-public-keys = [
+        "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
+      ];
     };
   };
   nixpkgs = {

@@ -48,6 +48,7 @@
     file = { };
     packages = [ ];
     pointerCursor = {
+      enable = true;
       gtk = {
         enable = true;
       };
