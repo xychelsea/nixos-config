@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   homeManager = builtins.fetchTarball {
-    url = "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz";
+    url = "https://github.com/nix-community/home-manager/archive/master.tar.gz";
   };
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
@@ -14,6 +14,11 @@ in
     };
   };
   boot = {
+    binfmt = {
+      emulatedSystems = [
+      ];
+      preferStaticEmulators = true;
+    };
     consoleLogLevel = 4;
     initrd = {
       availableKernelModules = [
@@ -23,6 +28,8 @@ in
         "xhci_pci"
         "xhci_plat_hcd"
       ];
+      secrets = {
+      };
       supportedFilesystems = [
         "btrfs"
       ];
@@ -271,7 +278,7 @@ in
     };
   };
   system = {
-    stateVersion = "26.05";
+    stateVersion = "26.11";
   };
   systemd = {
     tmpfiles = {

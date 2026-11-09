@@ -580,6 +580,10 @@ sanitize_hw_cfg() {
     exit 1
   }
 
+  # The tracked configuration is authoritative for filesystem topology.
+  # Keep generated kernel/initrd/platform detection, and on encrypted hosts keep
+  # the generated boot.initrd.luks.devices.<name>.device UUID. Remove only
+  # generated fileSystems and swapDevices declarations.
   awk '
     BEGIN { skip_fs = 0; skip_swap = 0 }
 
@@ -610,55 +614,12 @@ sanitize_hw_cfg() {
   ok "Removed generated filesystem/swap declarations from hardware-configuration.nix"
 }
 
-ensure_runtime_nixos_link() {
-  local f="${NIXOS_ROOT_DIR}/persist/etc/nixos/hardware-configuration.nix"
-  local tmp="${f}.tmp"
-  local marker='installer-managed /etc/nixos persistence'
-
-  [ -f "${f}" ] || {
-    warn "Missing generated hardware configuration: ${f}"
-    exit 1
-  }
-
-  if grep -Fq "${marker}" "${f}"; then
-    ok "Persistent /etc/nixos runtime link is already configured"
-    return 0
-  fi
-
-  awk -v marker="${marker}" '
-    { lines[NR] = $0 }
-    END {
-      last = NR
-      while (last > 0 && lines[last] ~ /^[[:space:]]*$/) last--
-      if (last == 0 || lines[last] !~ /^[[:space:]]*}[[:space:]]*$/) {
-        exit 42
-      }
-      for (i = 1; i < last; i++) print lines[i]
-      print ""
-      print "  # " marker
-      print "  systemd.tmpfiles.rules = ["
-      print "    \"L+ /etc/nixos - - - - /persist/etc/nixos\""
-      print "  ];"
-      print lines[last]
-      for (i = last + 1; i <= NR; i++) print lines[i]
-    }
-  ' "${f}" > "${tmp}" || {
-    rm -f "${tmp}"
-    warn "Unable to add persistent /etc/nixos rule to ${f}"
-    exit 1
-  }
-
-  mv "${tmp}" "${f}"
-  ok "Configured /etc/nixos -> /persist/etc/nixos for every boot"
-}
-
 generate_and_stage_configs() {
   step "Generating hardware configuration and staging repository files"
 
   run "install -d '${NIXOS_ROOT_DIR}/persist/etc/nixos'"
   run "nixos-generate-config --root '${NIXOS_ROOT_DIR}' --dir '${NIXOS_ROOT_DIR}/persist/etc/nixos/'"
   sanitize_hw_cfg
-  ensure_runtime_nixos_link
 
   run "install -d '${NIXOS_ROOT_DIR}/persist/etc/nixos/home-manager'"
   run "cp -f '${NIXOS_CONFIG}' '${NIXOS_ROOT_DIR}/persist/etc/nixos/configuration.nix'"
@@ -996,6 +957,7 @@ create_user_password_file() {
     warn "Passwords did not match or were empty. Try again."
   done
 
+  # Read the password from stdin so it never appears in argv/process listings.
   hash=$(printf '%s\n' "${pw1}" | mkpasswd --method=yescrypt --stdin)
   unset pw1 pw2
 
@@ -1007,6 +969,7 @@ create_user_password_file() {
 
   run "install -d -m 0700 '${target_dir}'"
 
+  # Avoid run/eval here: the hash should not be printed in installer output.
   (
     umask 077
     printf '%s\n' "${hash}" > "${target}"
@@ -1030,7 +993,6 @@ main() {
   if (( RESUME_BUILD )); then
     step "Resuming installation; partitioning and formatting are left untouched"
     prepare_resume_mounts
-    ensure_runtime_nixos_link
     seed_channels
     create_user_password_file
     profile_prepare_for_build
