@@ -16,6 +16,16 @@ in
   boot = {
     consoleLogLevel = 4;
     initrd = {
+      availableKernelModules = [
+        "dwc3"
+        "uas"
+        "usb_storage"
+        "xhci_pci"
+        "xhci_plat_hcd"
+      ];
+      supportedFilesystems = [
+        "btrfs"
+      ];
     };
     kernel = {
       sysctl = {
@@ -187,6 +197,12 @@ in
     ./hardware-configuration.nix
     (import "${homeManager}/nixos")
     (import "${impermanence}/nixos.nix")
+
+    rpi.lib.inject-overlays
+    rpi.nixosModules.nixpkgs-rpi
+    rpi.nixosModules.trusted-nix-caches
+    rpi.nixosModules."raspberry-pi-5".base
+    rpi.nixosModules."raspberry-pi-5"."page-size-16k"
   ];
   networking = {
     firewall = {
