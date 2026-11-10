@@ -1,0 +1,24 @@
+diff --git a/tools/include/linux/types.h b/tools/include/linux/types.h
+--- a/tools/include/linux/types.h
++++ b/tools/include/linux/types.h
+@@ -23,3 +23,8 @@
+ } gfp_t;
+ 
++#ifdef __SIZEOF_INT128__
++typedef __signed__ __int128 __s128 __attribute__((aligned(16)));
++typedef unsigned __int128 __u128 __attribute__((aligned(16)));
++#endif
++
+ /*
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -11089,7 +11089,7 @@
+ 		if (!search_paths[i])
+ 			continue;
+ 		for (s = search_paths[i]; s != NULL; s = strchr(s, ':')) {
+-			char *next_path;
++			const char *next_path;
+ 			int seg_len;
+ 
+ 			if (s[0] == ':')

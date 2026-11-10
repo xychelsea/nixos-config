@@ -14,25 +14,42 @@ in
 {
   boot = {
     consoleLogLevel = 4;
+    extraModulePackages = lib.mkForce [
+      (config.boot.kernelPackages.nvidia-oot-modules.overrideAttrs (old: {
+        postPatch = (old.postPatch or "") + ''
+          chmod +x nvdisplay/kernel-open/pahole.sh
+          chmod +x unifiedgpudisp/kernel-open/pahole.sh
+          patchShebangs nvdisplay/kernel-open/pahole.sh
+          patchShebangs unifiedgpudisp/kernel-open/pahole.sh
+        '';
+      }))
+    ];
     initrd = {
       availableKernelModules = [
-        "xhci_hcd"
-        "xhci_tegra"
-        "usb_storage"
-        "sd_mod"
+        "ahci"
         "nvme"
         "nvme_core"
         "pcie_tegra194"
         "phy_tegra194_p2u"
-        "ahci"
+        "sd_mod"
+        "usb_storage"
+        "xhci_hcd"
+        "xhci_tegra"
       ];
       kernelModules = [
-        "xhci_tegra"
-        "usb_storage"
+        "ahci"
         "nvme"
         "pcie_tegra194"
-        "ahci"
+        "usb_storage"
+        "xhci_tegra"
       ];
+      secrets = {
+      };
+      supportedFilesystems = [
+        "btrfs"
+      ];
+    };
+    kernel = {
     };
     kernelModules = [
       "lan743x"
@@ -49,6 +66,12 @@ in
       "nvme.use_threaded_interrupts=1"
       "swiotlb=2048"
       "firmware_class.path=/etc/firmware"
+    ];
+    kernelPatches = [
+      {
+        name = "arm64-libbpf-build-compat";
+        patch = ./kernel-bpf-compat.patch;
+      }
     ];
     loader = {
       systemd-boot = {
