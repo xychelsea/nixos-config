@@ -39,7 +39,7 @@ in
         "vm.mmap_rnd_bits" = 30;
       };
     };
-    kernelPackages = pkgs.linuxPackages_6_12;
+    kernelPackages = rpi.packages.${pkgs.stdenv.hostPlatform.system}.linuxPackages_rpi5;
     kernelModules = [
     ];
     kernelParams = [
@@ -59,7 +59,6 @@ in
     };
     supportedFilesystems = [
       "btrfs"
-      "zfs"
     ];
     zfs = {
       extraPools = [ ];
@@ -218,7 +217,7 @@ in
     hostName = "pibox";
     hostId = "1a2b3c4d";
     interfaces = {
-      enp5s0 = {
+      end0 = {
         useDHCP = true;
       };
     };
