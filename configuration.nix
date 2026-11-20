@@ -39,7 +39,7 @@ in
         "vm.mmap_rnd_bits" = 30;
       };
     };
-    kernelPackages = rpi.packages.${pkgs.stdenv.hostPlatform.system}.linuxPackages_rpi5;
+    kernelPackages = pkgs.linuxPackages_rpi5;
     kernelModules = [
     ];
     kernelParams = [
