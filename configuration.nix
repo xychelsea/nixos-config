@@ -42,6 +42,9 @@ in
     kernelPackages = pkgs.linuxPackages_rpi5;
     kernelModules = [
     ];
+    kernelPatches = lib.optional
+      (pkgs.kernelPatches ? tools_128bit_types)
+      pkgs.kernelPatches.tools_128bit_types;
     kernelParams = [
     ];
     loader = {
