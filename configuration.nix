@@ -120,6 +120,7 @@ in
       ];
       files = [
         "/etc/machine-id"
+        "/root/.nix-channels"
       ];
     };
     sessionVariables = {
@@ -252,7 +253,7 @@ in
     firewall = {
       allowedTCPPorts = [ 36122 ];
     };
-    hostName = "mediabox";
+    hostName = "cloudbox";
     hostId = "1a2b3c4d";
     interfaces = {
       enp8p1s0 = {
