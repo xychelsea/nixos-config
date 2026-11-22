@@ -90,6 +90,7 @@ in
       ];
       files = [
         "/etc/machine-id"
+        "/root/.nix-channels"
       ];
     };
     sessionVariables = {
